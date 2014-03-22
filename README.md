@@ -12,7 +12,7 @@ Never again.
 
 
 ## Usage
-Clone the repo somewhere on your machine, copy what you want into your home directory.
+This is a backup of my dotfiles, but you're welcome to use them. Clone the repo somewhere on your machine, copy what you want into your home directory.
 
 
 ## Contents
@@ -33,7 +33,7 @@ Random git config, basically for me.
 Brewfile for replicating some of the brews that I like if my machine were destroyed / stolen by a rogue beaver of sorts.
 
 ## Colour
-*I am quite opinionated about my colour scheme, all props go to http://ethanschoonover.com/solarized for his awesome work on solarized.*
+*I am quite opinionated about my colour scheme*. All props go to http://ethanschoonover.com/solarized for his awesome work on solarized.
 
 tmux / vim / shell screenshot
 
