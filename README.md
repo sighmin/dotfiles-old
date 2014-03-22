@@ -35,6 +35,9 @@ Brewfile for replicating some of the brews that I like if my machine were destro
 ## Colour
 *I am quite opinionated about my colour scheme, all props go to http://ethanschoonover.com/solarized for his awesome work on solarized.*
 
+tmux / vim / shell screenshot
+
+![Missing image](https://dl.dropboxusercontent.com/u/4042547/sighmin-dotfiles-screenshot.png)
 
 
 ## License
