@@ -49,6 +49,7 @@ Bundle 'csexton/trailertrash.vim'
 Bundle 'textobj-user'
 " Handy ruby block selectors (try var and vir for 'around' and 'inside')
 Bundle 'textobj-rubyblock'
+" Easy pane navigation between vim and tmux
 Bundle 'christoomey/vim-tmux-navigator'
 " Easy navigation to selections
 " Bundle 'Lokaltog/vim-easymotion'
@@ -93,16 +94,16 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTree
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let mapleader=","
 " Fancy status line delimeters (block arrow thing)
-let g:Powerline_symbols = 'fancy'
+let g:Powerline_theme='long'
+let g:Powerline_colorscheme='solarized'
+" let g:Powerline_symbols = 'fancy'
+" let g:airline_powerline_fonts = 1
 let g:ctrlp_max_height = 25
 let g:syntastic_check_on_open=1
 let delimitMate_expand_cr = 1
 let delimitMate_expand_space = 1
 let NERDTreeShowHidden=1
 let g:yankring_replace_n_pkey = '<C-;>'
-" let g:Powerline_theme='long'
-" let g:Powerline_colorscheme='solarized256_light'
-" let g:airline_powerline_fonts = 1
 " let g:rspec_command = 'call SendToTmux("zeus test {spec}\n")'
 " let g:rspec_runner = 'os_x_iterm'
 " let CoVim_default_name = 'simon'
@@ -166,11 +167,13 @@ set number
 " Enable line numbers relative to cursor line position
 set relativenumber
 " Offset when scrolling a file larger than window
-set scrolloff=5
+set scrolloff=10
 " Enable copying of text using mouse
 set mouse=a
 " Always show the status bar
 set laststatus=2
+" Do not redraw while running macros
+set lazyredraw
 " We're running vim not vi!
 set nocompatible
 " Don't use a temporary swapfile, backup save or write that backup to disk

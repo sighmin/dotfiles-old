@@ -91,13 +91,16 @@ eval "$(goenv init -)"
 
 
 ### ALIASES ###
+# be nice to windows users
+alias dir='ls'
+alias cls='clear'
 # personal aliases
 alias md='mkdir -p'
 alias rd='rmdir'
 alias l='ls -la'
 alias la='ls -al'
 alias ll='ls -l'
-alias ls='ls -G'
+alias ls='ls -CFG'
 alias lsa='ls -lah'
 alias please='sudo'
 alias pls='sudo'
@@ -117,7 +120,8 @@ alias pgstart='pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/serv
 alias pgstop='pg_ctl -D /usr/local/var/postgres stop -s -m fast'
 # project aliases
 alias mds='ssh simon@mds.mogulview.com'
-
+# command aggregation aliases
+alias tree="find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'"
 
 ### ENVIRONMENT ###
 # rails devise default user for railsapps composer
