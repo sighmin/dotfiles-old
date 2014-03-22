@@ -115,6 +115,10 @@ alias zd='zeus dbconsole'
 alias gblame='git blame'
 alias gg='git add -A .; git commit -m'
 alias rk='bundle exec rake'
+# tmux aliases
+alias ta='tmux attach -t'
+alias ts='tmux new-session -s'
+alias tl='tmux list-sessions'
 # db aliases
 alias pgstart='pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start'
 alias pgstop='pg_ctl -D /usr/local/var/postgres stop -s -m fast'

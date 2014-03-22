@@ -1,0 +1,15 @@
+# ~/.tmuxinator/blog.yml
+
+name: blog
+root: ~/Develop/domains/simonvandyk.co.za/simonvandyk.co.za
+socket_name: blog
+pre:
+  - open http://localhost:3000 &
+
+windows:
+  - editor:
+      layout: 1f48,185x54,0,0{112x54,0,0,3,72x54,113,0,5}
+      panes:
+        - vim .
+        - clear # useful for rake commands
+  - server: bundle exec rake preview
