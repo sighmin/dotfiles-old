@@ -3,29 +3,39 @@ My environment configuration files for shell, tmux and vim.
 I work in OS X so I can't guarantee this will work on other *nix derivatives.
 
 Once upon a time I typed something to the likes of <br>
-`$ my-config-setting > ~/.zshrc` <br>
+`$ echo "my-config=setting" > ~/.zshrc` <br>
 instead of <br>
-`$ my-config-setting >> ~/.zshrc` <br>
+`$ echo "my-config=setting" >> ~/.zshrc` <br>
 and overwrote my config.
 
 Never again.
 
+
 ## Usage
 Clone the repo somewhere on your machine, copy what you want into your home directory.
+
 
 ## Contents
 
 ### .zshrc
-Slightly modified version of .oh-my-zsh with some handy aliases.
+Slightly modified version of .oh-my-zsh with some handy aliases for my current dev stack.
 
 ### .tmux.conf
-I'm new to tmux so this will be evolving soon. But it's got some basic stuff to be more seemless with vim.
+I'm new to tmux but this is the most exciting for me at the moment. I use tmuxinator to define 'dev' and 'blog' projects I can quickly tap into pre-configured tmux sessions.
 
 ### .vimrc
 I'm most proud of this, especially thanks to [Kevin](https://github.com/kmckelvin) for his help on this one.
 
 ### .gitconfig
 Random git config, basically for me.
+
+### Others
+Brewfile for replicating some of the brews that I like if my machine were destroyed / stolen by a rogue beaver of sorts.
+
+## Colour
+*I am quite opinionated about my colour scheme, all props go to http://ethanschoonover.com/solarized for his awesome work on solarized.*
+
+
 
 ## License
 
