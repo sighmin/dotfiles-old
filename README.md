@@ -10,24 +10,24 @@ and overwrote my config.
 
 Never again.
 
-# Usage
+## Usage
 Clone the repo somewhere on your machine, copy what you want into your home directory.
 
-# Contents
+## Contents
 
-## .zshrc
+### .zshrc
 Slightly modified version of .oh-my-zsh with some handy aliases.
 
-## .tmux.conf
+### .tmux.conf
 I'm new to tmux so this will be evolving soon. But it's got some basic stuff to be more seemless with vim.
 
-## .vimrc
+### .vimrc
 I'm most proud of this, especially thanks to [Kevin](https://github.com/kmckelvin) for his help on this one.
 
-## .gitconfig
+### .gitconfig
 Random git config, basically for me.
 
-# License
+## License
 
 The MIT License (MIT)
 
