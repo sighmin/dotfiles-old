@@ -50,7 +50,11 @@ Bundle 'textobj-user'
 " Handy ruby block selectors (try var and vir for 'around' and 'inside')
 Bundle 'textobj-rubyblock'
 " Easy pane navigation between vim and tmux
-Bundle 'christoomey/vim-tmux-navigator'
+"Bundle 'christoomey/vim-tmux-navigator'
+" Great collection of colour schemes for vim
+Bundle 'flazz/vim-colorschemes'
+
+
 " Easy navigation to selections
 " Bundle 'Lokaltog/vim-easymotion'
 "
@@ -73,20 +77,6 @@ Bundle 'christoomey/vim-tmux-navigator'
 " Bundle 'adamlowe/vim-slurper'
 " Bundle 'FredKSchott/CoVim'
 " Bundle 'godlygeek/tabular'
-
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" AUTOCMD
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Autoindent with two spaces, always expand tabs
-" These are abbreviations for tabstop, shiftwidth, softtabstop
-autocmd BufNewFile,BufReadPost * set ai ts=2 sw=2 sts=2 et
-
-" Check for external file changes
-autocmd CursorHold,CursorMoved,BufEnter * checktime
-
-" Close vim if nerdtree is the last window left open
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -120,6 +110,16 @@ endif
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" REUSEABLE MACROS
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Change hashrocket (with spaces) to ruby 1.9.x hash syntax
+let @s='^f>a€kb€kb€kb:Bx'
+" Change hashrocket (with no spaces) to ruby 1.9.x hash syntax
+let @d='^f>a€kb€kb: Bx'
+" Refactor 3 line rails 2 route to a 1 line rails 3 route
+let @w="2cwmatch lveldjj$a, as: :pk^dt'i€kb€kb€kb j^dt'i€kb€kb€kbhdf'i#^f,xi =>^j"
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CONFIGURATION
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Set utf8 as standard encoding and en_US as the standard language
@@ -145,6 +145,8 @@ endif
 set splitright
 " Split window appears beneath current
 set splitbelow
+" Enable copying of text using mouse
+set mouse=a
 " More advanced mouse support (drag etc)
 if has('mouse_sgr')
   set ttymouse=sgr
@@ -168,8 +170,6 @@ set number
 set relativenumber
 " Offset when scrolling a file larger than window
 set scrolloff=10
-" Enable copying of text using mouse
-set mouse=a
 " Always show the status bar
 set laststatus=2
 " Do not redraw while running macros
@@ -212,6 +212,11 @@ endif
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " MAPPINGS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Remap arrow keys to break the habit
+noremap <up> <nop>
+noremap <down> <nop>
+noremap <left> <nop>
+noremap <right> <nop>
 " Removing current search highlight
 map <leader>. :noh<cr>
 " Delete current line, move up a line, insert newline in insert mode
@@ -219,16 +224,13 @@ nmap <leader>o ddko
 " Toggle nerd tree
 map <leader>n :NERDTreeTabsToggle<cr>
 " Close current buffer
-map <leader>bd :Bclose<cr>
+map <leader>bd :bd!<cr>
 " Close all open buffers
 map <leader>ba :1,1000 bd!<cr>
 
 " xmpfilter mappings for marking lines & running
 map <leader>m <Plug>(xmpfilter-mark)
 map <leader>r <Plug>(xmpfilter-run)
-
-" Paste, fix indentation and clear the mark by default
-nnoremap p p=`]`<esc>
 
 " j and k navigate through wrapped lines
 nmap k gk
@@ -247,13 +249,15 @@ map <leader>ml :wincmd L<cr>
 " Flip left and right panes
 map <leader>mm :NERDTreeTabsClose<cr>:wincmd l<cr>:wincmd H<cr>:NERDTreeTabsOpen<cr>:wincmd l<cr><C-W>=
 
-" Convenient mappings, to complete a command
+" Convenient mappings to complete a shell command
+map  <leader>bi :!bundle install<space>
 map  <leader>bu :!bundle update<space>
 nmap <leader>bx :!bundle exec<space>
 nmap <leader>zx :!zeus<space>
-" Convenient mapping, to run a command
+" Convenient mappings for vim commands
 map <leader>vbi :BundleInstall<cr>
 map <leader>vbu :BundleUpdate<cr>
+map <leader>ve :e ~/.vimrc<CR>
 map <leader>vr :so ~/.vimrc<cr>
 
 " Conventient mapping of :Q to :q for mistakes while trying to quit
@@ -265,23 +269,30 @@ command! Wa wall
 " Consistent navigation between vim & tmux - this is absolutely awesome
 " Source http://www.codeography.com/2013/06/19/navigating-vim-and-tmux-splits
 if exists('$TMUX')
-  function! TmuxOrSplitSwitch(wincmd, tmuxdir)
+  " If 'tmate' is in the $TMUX variable string, we're in tmate, not tmux
+  if index(split($TMUX, '\W\+'), "tmux") == -1
+    let multiplexer = 'tmate'
+  else
+    let multiplexer = 'tmux'
+  endif
+
+  function! MultiplexerOrSplitSwitch(wincmd, tmuxdir, multiplexer)
     let previous_winnr = winnr()
     silent! execute "wincmd " . a:wincmd
     if previous_winnr == winnr()
-      call system("tmux select-pane -" . a:tmuxdir)
+      call system(a:multiplexer . " select-pane -" . a:tmuxdir)
       redraw!
     endif
   endfunction
 
-  let previous_title = substitute(system("tmux display-message -p '#{pane_title}'"), '\n', '', '')
+  let previous_title = substitute(system(multiplexer . " display-message -p '#{pane_title}'"), '\n', '', '')
   let &t_ti = "\<Esc>]2;vim\<Esc>\\" . &t_ti
   let &t_te = "\<Esc>]2;". previous_title . "\<Esc>\\" . &t_te
 
-  nnoremap <silent> <c-h> :call TmuxOrSplitSwitch('h', 'L')<cr>
-  nnoremap <silent> <c-j> :call TmuxOrSplitSwitch('j', 'D')<cr>
-  nnoremap <silent> <c-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
-  nnoremap <silent> <c-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
+  nnoremap <silent> <c-h> :call MultiplexerOrSplitSwitch('h', 'L', multiplexer)<cr>
+  nnoremap <silent> <c-j> :call MultiplexerOrSplitSwitch('j', 'D', multiplexer)<cr>
+  nnoremap <silent> <c-k> :call MultiplexerOrSplitSwitch('k', 'U', multiplexer)<cr>
+  nnoremap <silent> <c-l> :call MultiplexerOrSplitSwitch('l', 'R', multiplexer)<cr>
 else
   " No tmux session, so navigate panes with <c-hjkl>
   map <c-h> <c-w>h
@@ -289,6 +300,24 @@ else
   map <c-k> <c-w>k
   map <c-l> <c-w>l
 endif
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" AUTOCMD
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Autoindent with two spaces, always expand tabs
+" These are abbreviations for tabstop, shiftwidth, softtabstop
+autocmd BufNewFile,BufReadPost * set ai ts=2 sw=2 sts=2 et
+
+" Check for external file changes
+autocmd CursorHold,CursorMoved,BufEnter * checktime
+
+" Close vim if nerdtree is the last window left open
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+" Source .vimrc when saving .vimrc
+autocmd BufWritePost .vimrc source $MYVIMRC
+
 
 " Kevin
 " Some magic right here Kev...
@@ -317,8 +346,20 @@ if has("autocmd")
 
   augroup END
 
-endif " has("autocmd")
+endif
 
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" MAPPINGS
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Cool new stuff to try!
+
+" Save file when changing focus away from vim
+" au FocusLost * :wa
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" KEVIN'S CONFIG TO LOOK AT
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Kevin
 " map <silent> <leader>gs :Gstatus<cr>/not staged<cr>/modified<cr>
 " map <leader>gc :Gcommit<cr>
