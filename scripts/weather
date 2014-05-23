@@ -1,0 +1,3 @@
+#!/bin/sh
+
+curl --silent "http://xml.weather.yahoo.com/forecastrss?p=SFXX0044&u=c" | grep -E '(Current Conditions:|C<BR)' | sed -e 's/Current Conditions://' -e 's/<br \/>//' -e 's/<b>//' -e 's/<\/b>//' -e 's/<BR \/>//' -e 's///' -e 's/<\/description>//' | grep ,

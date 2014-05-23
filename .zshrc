@@ -110,6 +110,7 @@ alias please='sudo'
 alias touche='touch'
 
 # dev aliases
+alias v='vim'
 alias b='bundle'
 alias z='zeus'
 alias zr='zeus rake'
@@ -119,6 +120,10 @@ alias zd='zeus dbconsole'
 alias gblame='git blame'
 alias gg='git add -A .; git commit -m'
 alias rk='bundle exec rake'
+alias rb='bundle exec ruby'
+
+# project aliases
+alias mds='cd ~/Develop/work/45/ereads/MDS/'
 
 # tmux aliases
 alias ta='tmux attach -t'
@@ -135,18 +140,10 @@ alias msstop='brew services stop mysql'
 alias msrestart='brew services restart mysql'
 
 # project aliases
-ereadz_domain='mogulview.com'
-ssh_client='ssh'
 user_name='simon'
 ip_partial='176.9.70'
-alias production="$ssh_client $user_name@mds.$ereadz_domain"
-alias staging="$ssh_client $user_name@staging.$ereadz_domain"
-alias development="$ssh_client $user_name@development.$ereadz_domain"
-alias upgrade="$ssh_client $user_name@$ip_partial.209"
-
-alias productionip="$ssh_client $user_name@$ip_partial.210"
-alias stagingip="$ssh_client $user_name@$ip_partial.210"
-alias developmentip="$ssh_client $user_name@$ip_partial.209"
+alias production="ssh $user_name@$ip_partial.210"
+alias staging="ssh $user_name@$ip_partial.209"
 
 # command aggregation aliases
 alias tree="find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'"
@@ -155,16 +152,19 @@ alias zrc="vim ~/.zshrc"
 alias vrc="vim ~/.vimrc"
 alias trc="vim ~/.tmux.conf"
 
+# betty - siri for command line
+alias betty="~/.betty/main.rb"
+
 
 ######################################
 ### Custom Shell Features
 
-# jump to gems directory of current ruby version
-gemsdir(){
-  RBV="$(rbenv version-name)"
-  echo "~/.rbenv/versions/$RBV/lib/ruby/gems/$RBV/gems"
+# C-z to close and open vim
+foreground-vi() {
+  fg %vi
 }
-alias gems=$(gemsdir)
+zle -N foreground-vi
+bindkey '^Z' foreground-vi
 
 # create pull request into specified branch (develop if none specified)
 function gpr {
@@ -204,3 +204,5 @@ export NARWHAL_ENGINE=jsc
 export CAPP_BUILD=$HOME/.cappbuild
 export SSL_CERT_FILE=/usr/local/opt/curl-ca-bundle/share/ca-bundle.crt
 
+# fish like shell highlighting
+source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

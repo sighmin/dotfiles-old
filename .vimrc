@@ -1,82 +1,91 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " VUNDLE
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
-Bundle 'gmarik/vundle'
+set nocompatible " Required for vundle
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'gmarik/vundle'
 
 " Silver searcher in ctrl-p
-Bundle 'rking/ag.vim'
+Plugin 'rking/ag.vim'
 " Ruby editing niceties (c-x c-o to show methods)
-Bundle 'vim-ruby/vim-ruby'
+Plugin 'vim-ruby/vim-ruby'
 " Rails navigation and much more (:A and :R, also try :Emodel name!)
-Bundle 'tpope/vim-rails'
+Plugin 'tpope/vim-rails'
 " Git wrapper for vim (try :Gblame)
-Bundle 'tpope/vim-fugitive'
+Plugin 'tpope/vim-fugitive'
 " Change surrounding chars (try cs\"' inside braces - remove the \ )
-Bundle 'tpope/vim-surround'
+Plugin 'tpope/vim-surround'
 " Helper to end control structures automatically (ruby, bash, VS, C/C++ etc)
-Bundle 'tpope/vim-endwise'
+Plugin 'tpope/vim-endwise'
 " Run specs from vim
-Bundle 'thoughtbot/vim-rspec'
+Plugin 'thoughtbot/vim-rspec'
 " Autoclosing of quotes, parentheses, brackets etc
-Bundle 'Raimondi/delimitMate'
+Plugin 'Raimondi/delimitMate'
 " Fuzzy search of all files in directory
-Bundle 'kien/ctrlp.vim'
+Plugin 'kien/ctrlp.vim'
 " Slim template highlighting
-Bundle 'slim-template/vim-slim'
+Plugin 'slim-template/vim-slim'
 " Begins tab completion with a single <tab> instead of c-x c-o
-Bundle 'ervandew/supertab'
+Plugin 'ervandew/supertab'
 " CS syntax, indenting, compling etc
-Bundle 'kchmck/vim-coffee-script'
+Plugin 'kchmck/vim-coffee-script'
 " Easy multi line commenting (try <leader>ci )
-Bundle 'ddollar/nerdcommenter'
+Plugin 'ddollar/nerdcommenter'
 " Preemptive syntax checking for multiple languages
-Bundle 'scrooloose/syntastic'
+Plugin 'scrooloose/syntastic'
 " Awesome directory listings (try <leader>n )
-Bundle 'scrooloose/nerdtree'
+Plugin 'scrooloose/nerdtree'
 " Awesome status line
-Bundle 'Lokaltog/vim-powerline'
+Plugin 'Lokaltog/vim-powerline'
+Plugin 'stephenmckinney/vim-solarized-powerline'
 " Provides nerdtree toggle function (mapped to <leader>n)
-Bundle 'jistr/vim-nerdtree-tabs'
+Plugin 'jistr/vim-nerdtree-tabs'
 " Sublime Text style multiple cursors (put cursor on a word, then hit C-n)
-Bundle 'terryma/vim-multiple-cursors'
+Plugin 'terryma/vim-multiple-cursors'
 " Record result of every line of code & replay inline (<leader>m & <leader>r)
-Bundle 't9md/vim-ruby-xmpfilter'
+Plugin 't9md/vim-ruby-xmpfilter'
 " Unobtrusiver highlighting of trailing whitespaces (:Trim)
-Bundle 'csexton/trailertrash.vim'
+Plugin 'csexton/trailertrash.vim'
 " User defined text-objects
-Bundle 'textobj-user'
+Plugin 'textobj-user'
 " Handy ruby block selectors (try var and vir for 'around' and 'inside')
-Bundle 'textobj-rubyblock'
+Plugin 'textobj-rubyblock'
+" Show marks easily
+Plugin 'jacquesbh/vim-showmarks'
 " Easy pane navigation between vim and tmux
-"Bundle 'christoomey/vim-tmux-navigator'
+"Plugin 'christoomey/vim-tmux-navigator'
 " Great collection of colour schemes for vim
-Bundle 'flazz/vim-colorschemes'
-
+Plugin 'flazz/vim-colorschemes'
 
 " Easy navigation to selections
-" Bundle 'Lokaltog/vim-easymotion'
+" Plugin 'Lokaltog/vim-easymotion'
 "
 " Send a buffer to tmux
-" Bundle 'jgdavey/tslime.vim'
+" Plugin 'jgdavey/tslime.vim'
 "
 " Change to airline in favour of powerline
-" Bundle 'Lokaltog/vim-powerline'
-" Bundle 'bling/vim-airline'
+" Plugin 'Lokaltog/vim-powerline'
+" Plugin 'bling/vim-airline'
 "
 " Match more than chars with %, match words etc
-" Bundle 'jwhitley/vim-matchit'
+" Plugin 'jwhitley/vim-matchit'
 "
 " Defines a new text object representing lines of code at the same indent level
-" Bundle 'michaeljsmith/vim-indent-object'
+" Plugin 'michaeljsmith/vim-indent-object'
 "
-" Bundle 'ecomba/vim-ruby-refactoring'
-" Bundle 'guns/vim-clojure-static'
-" Bundle 'jnwhiteh/vim-golang'
-" Bundle 'adamlowe/vim-slurper'
-" Bundle 'FredKSchott/CoVim'
-" Bundle 'godlygeek/tabular'
+" Some scripts Kevin uses
+" Plugin 'ecomba/vim-ruby-refactoring'
+" Plugin 'guns/vim-clojure-static'
+" Plugin 'jnwhiteh/vim-golang'
+" Plugin 'adamlowe/vim-slurper'
+" Plugin 'godlygeek/tabular'
+"
+" This looks cool but is too unstable atm
+" Plugin 'FredKSchott/CoVim'
+
+call vundle#end()
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -86,7 +95,7 @@ let mapleader=","
 " Fancy status line delimeters (block arrow thing)
 let g:Powerline_theme='long'
 let g:Powerline_colorscheme='solarized'
-" let g:Powerline_symbols = 'fancy'
+"let g:Powerline_symbols = 'fancy'
 " let g:airline_powerline_fonts = 1
 let g:ctrlp_max_height = 25
 let g:syntastic_check_on_open=1
@@ -108,7 +117,6 @@ else
   let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 endif
 
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " REUSEABLE MACROS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -118,6 +126,8 @@ let @s='^f>a€kb€kb€kb:Bx'
 let @d='^f>a€kb€kb: Bx'
 " Refactor 3 line rails 2 route to a 1 line rails 3 route
 let @w="2cwmatch lveldjj$a, as: :pk^dt'i€kb€kb€kb j^dt'i€kb€kb€kbhdf'i#^f,xi =>^j"
+" Cut a line of text to 80 chars at the most convenient word
+let @c="^80lbi€kb"
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CONFIGURATION
@@ -132,12 +142,13 @@ syntax on
 set t_Co=256
 " Set solarized light by changing background
 set background=light
+"set background=dark
 " Set solarized colour scheme
 colorscheme solarized
 " Set font & size in gui vim (macvim in this case)
 if has('gui_running')
   if has('gui_macvim')
-    set guifont=Menlo\ Regular:h15
+    set guifont=Menlo\ Regular:h14
   endif
 endif
 
@@ -169,7 +180,7 @@ set number
 " Enable line numbers relative to cursor line position
 set relativenumber
 " Offset when scrolling a file larger than window
-set scrolloff=10
+set scrolloff=5
 " Always show the status bar
 set laststatus=2
 " Do not redraw while running macros
@@ -219,8 +230,8 @@ noremap <left> <nop>
 noremap <right> <nop>
 " Removing current search highlight
 map <leader>. :noh<cr>
-" Delete current line, move up a line, insert newline in insert mode
-nmap <leader>o ddko
+" Paste 0 buffer (last yanked contents)
+"nmap <leader>p "0p
 " Toggle nerd tree
 map <leader>n :NERDTreeTabsToggle<cr>
 " Close current buffer
@@ -249,6 +260,9 @@ map <leader>ml :wincmd L<cr>
 " Flip left and right panes
 map <leader>mm :NERDTreeTabsClose<cr>:wincmd l<cr>:wincmd H<cr>:NERDTreeTabsOpen<cr>:wincmd l<cr><C-W>=
 
+" Show marks
+nnoremap ` :ShowMarksOnce<cr>`
+
 " Convenient mappings to complete a shell command
 map  <leader>bi :!bundle install<space>
 map  <leader>bu :!bundle update<space>
@@ -257,8 +271,10 @@ nmap <leader>zx :!zeus<space>
 " Convenient mappings for vim commands
 map <leader>vbi :BundleInstall<cr>
 map <leader>vbu :BundleUpdate<cr>
-map <leader>ve :e ~/.vimrc<CR>
 map <leader>vr :so ~/.vimrc<cr>
+map <leader>ve :e ~/.vimrc<CR>
+map <leader>te :e ~/.tmux.conf<CR>
+map <leader>ze :e ~/.zshrc<CR>
 
 " Conventient mapping of :Q to :q for mistakes while trying to quit
 command! Q q
