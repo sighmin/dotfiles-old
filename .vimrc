@@ -2,8 +2,10 @@
 " VUNDLE
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible " Required for vundle
+syntax on
 filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
+set shell=/bin/bash " Set shell for vundle
 call vundle#begin()
 Plugin 'gmarik/vundle'
 
@@ -54,36 +56,50 @@ Plugin 'textobj-user'
 Plugin 'textobj-rubyblock'
 " Show marks easily
 Plugin 'jacquesbh/vim-showmarks'
-" Easy pane navigation between vim and tmux
-"Plugin 'christoomey/vim-tmux-navigator'
 " Great collection of colour schemes for vim
 Plugin 'flazz/vim-colorschemes'
+" Auto ctags update
+Plugin 'xolox/vim-easytags'
+" Browse ctags in a bar
+Plugin 'majutsushi/tagbar'
+" Dependency of xolox's vim plugins
+Plugin 'xolox/vim-misc'
+" Syntax for emblem
+Plugin 'heartsentwined/vim-emblem'
+" Show git diff marks in sidebar
+"http://stackoverflow.com/questions/15277241/changing-vim-gutter-color
+Plugin 'airblade/vim-gitgutter'
+" Align stuff
+Plugin 'godlygeek/tabular'
 
 " Easy navigation to selections
-" Plugin 'Lokaltog/vim-easymotion'
+"Plugin 'Lokaltog/vim-easymotion'
 "
 " Send a buffer to tmux
-" Plugin 'jgdavey/tslime.vim'
+"Plugin 'jgdavey/tslime.vim'
 "
 " Change to airline in favour of powerline
-" Plugin 'Lokaltog/vim-powerline'
-" Plugin 'bling/vim-airline'
+"Plugin 'Lokaltog/vim-powerline'
+"Plugin 'bling/vim-airline'
 "
 " Match more than chars with %, match words etc
-" Plugin 'jwhitley/vim-matchit'
+"Plugin 'jwhitley/vim-matchit'
 "
 " Defines a new text object representing lines of code at the same indent level
-" Plugin 'michaeljsmith/vim-indent-object'
+"Plugin 'michaeljsmith/vim-indent-object'
 "
 " Some scripts Kevin uses
-" Plugin 'ecomba/vim-ruby-refactoring'
-" Plugin 'guns/vim-clojure-static'
-" Plugin 'jnwhiteh/vim-golang'
-" Plugin 'adamlowe/vim-slurper'
-" Plugin 'godlygeek/tabular'
+"Plugin 'ecomba/vim-ruby-refactoring'
+"Plugin 'guns/vim-clojure-static'
+"Plugin 'jnwhiteh/vim-golang'
+"Plugin 'adamlowe/vim-slurper'
 "
 " This looks cool but is too unstable atm
-" Plugin 'FredKSchott/CoVim'
+"Plugin 'FredKSchott/CoVim'
+"
+"
+" Elixir lang config
+Plugin 'elixir-lang/vim-elixir'
 
 call vundle#end()
 
@@ -91,25 +107,42 @@ call vundle#end()
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " VARIABLES
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let mapleader=","
+" ctags config
+let mapleader=" "
+" Set local tags file for increased speed
+set tags='./tags'
+let g:easytags_dynamic_files=2
+" Do not automatically update highlights (slows things down)
+let g:easytags_auto_highlight=0
+" Update tags every 8 secs on inactivity
+let g:easytags_updatetime_min=8000
+
 " Fancy status line delimeters (block arrow thing)
 let g:Powerline_theme='long'
-let g:Powerline_colorscheme='solarized'
 "let g:Powerline_symbols = 'fancy'
-" let g:airline_powerline_fonts = 1
+"let g:airline_powerline_fonts = 1
+
+" Set ctrl-p's maximum height
 let g:ctrlp_max_height = 25
+" Check syntax on buffer read
 let g:syntastic_check_on_open=1
+let g:syntastic_disabled_filetypes=['html']
+let g:syntastic_html_checkers=['']
 let delimitMate_expand_cr = 1
 let delimitMate_expand_space = 1
+" Show hidden files in NERDTree
 let NERDTreeShowHidden=1
 let g:yankring_replace_n_pkey = '<C-;>'
-" let g:rspec_command = 'call SendToTmux("zeus test {spec}\n")'
-" let g:rspec_runner = 'os_x_iterm'
-" let CoVim_default_name = 'simon'
-" let CoVim_default_port = '5555'
+
+" tslime config
+"let g:rspec_command = 'call SendToTmux("zeus test {spec}\n")'
+"let g:rspec_runner = 'os_x_iterm'
+" CoVim config
+"let CoVim_default_name = 'simon'
+"let CoVim_default_port = '5555'
 
 " Add change in cursor when in vim in tmux
-if $TMUX != ""
+if exists('$TMUX')
   let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
   let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
 else
@@ -138,13 +171,40 @@ set encoding=utf8
 filetype plugin indent on
 " We want syntax highlighting
 syntax on
+
+"""""""""""""""""""""""
+" Color Configuration "
+"""""""""""""""""""""""
 " Enable support for 256 colours
 set t_Co=256
-" Set solarized light by changing background
-set background=light
-"set background=dark
-" Set solarized colour scheme
-colorscheme solarized
+
+" Set background
+"set background=light
+set background=dark
+
+" Colour schemes available:
+"colorscheme tomorrow
+"colorscheme tomorrow-night
+"colorscheme tomorrow-night-bright
+"colorscheme grb256
+"colorscheme solarized
+
+" Set colour schemes differently if pairing
+if exists('$PAIRING')
+  "colorscheme tomorrow-night
+  colorscheme tomorrow-night-bright
+else
+  let g:Powerline_colorscheme='solarized'
+  "let g:
+  colorscheme solarized
+  set background=light
+endif
+
+
+"""""""""""""""""""""""
+" End color config    "
+"""""""""""""""""""""""
+
 " Set font & size in gui vim (macvim in this case)
 if has('gui_running')
   if has('gui_macvim')
@@ -234,10 +294,17 @@ map <leader>. :noh<cr>
 "nmap <leader>p "0p
 " Toggle nerd tree
 map <leader>n :NERDTreeTabsToggle<cr>
+" Toggle tagbar
+map <leader>b :TagbarToggle<cr>
 " Close current buffer
 map <leader>bd :bd!<cr>
 " Close all open buffers
 map <leader>ba :1,1000 bd!<cr>
+
+" Tabularize (aligning stuff) mappings
+map <leader>: :Tabularize /:\zs<cr>
+map <leader>= :Tabularize /=<cr>
+map <leader>=> :Tabularize /=>\zs<cr>
 
 " xmpfilter mappings for marking lines & running
 map <leader>m <Plug>(xmpfilter-mark)
@@ -269,18 +336,21 @@ map  <leader>bu :!bundle update<space>
 nmap <leader>bx :!bundle exec<space>
 nmap <leader>zx :!zeus<space>
 " Convenient mappings for vim commands
-map <leader>vbi :BundleInstall<cr>
-map <leader>vbu :BundleUpdate<cr>
+map <leader>vbi :PluginInstall<cr>
+map <leader>vbu :PluginUpdate<cr>
 map <leader>vr :so ~/.vimrc<cr>
-map <leader>ve :e ~/.vimrc<CR>
-map <leader>te :e ~/.tmux.conf<CR>
-map <leader>ze :e ~/.zshrc<CR>
+map <leader>ve :e ~/.vimrc<cr>
+map <leader>te :e ~/.tmux.conf<cr>
+map <leader>ze :e ~/.zshrc<cr>
 
 " Conventient mapping of :Q to :q for mistakes while trying to quit
 command! Q q
 command! Qall qall
 command! W w
 command! Wa wall
+
+" Convenient mappings for CtrlP and ctags
+nmap <leader>[ :CtrlPTag<cr>
 
 " Consistent navigation between vim & tmux - this is absolutely awesome
 " Source http://www.codeography.com/2013/06/19/navigating-vim-and-tmux-splits
@@ -321,23 +391,19 @@ endif
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " AUTOCMD
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Autoindent with two spaces, always expand tabs
-" These are abbreviations for tabstop, shiftwidth, softtabstop
-autocmd BufNewFile,BufReadPost * set ai ts=2 sw=2 sts=2 et
-
-" Check for external file changes
-autocmd CursorHold,CursorMoved,BufEnter * checktime
-
-" Close vim if nerdtree is the last window left open
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
-
-" Source .vimrc when saving .vimrc
-autocmd BufWritePost .vimrc source $MYVIMRC
-
-
-" Kevin
-" Some magic right here Kev...
 if has("autocmd")
+  " Autoindent with two spaces, always expand tabs
+  " These are abbreviations for tabstop, shiftwidth, softtabstop
+  autocmd BufNewFile,BufReadPost * set ai ts=2 sw=2 sts=2 et
+
+  " Check for external file changes
+  autocmd CursorHold,CursorMoved,BufEnter * checktime
+
+  " Close vim if nerdtree is the last window left open
+  autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+  " Source .vimrc when saving .vimrc
+  autocmd BufWritePost .vimrc source $MYVIMRC
   " Also load indent files, to automatically do language-dependent indenting.
 
   " Put these in an autocmd group, so that we can delete them easily.
@@ -350,6 +416,7 @@ if has("autocmd")
   " Never wrap slim files
   autocmd FileType slim setlocal textwidth=0
 
+  " Remove trailing whitespaces on save
   autocmd BufWritePre * :%s/\s\+$//e
 
   " When editing a file, always jump to the last known cursor position.
@@ -369,9 +436,7 @@ endif
 " MAPPINGS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Cool new stuff to try!
-
-" Save file when changing focus away from vim
-" au FocusLost * :wa
+" ... nothing new here ...
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " KEVIN'S CONFIG TO LOOK AT
@@ -447,16 +512,3 @@ endif
 "   map <leader>dbr :!zeus rake db:rollback<cr>
 "   nmap <leader>dbt :!zeus rake db:test:prepare<cr>
 " endif
-
-" Kevin
-" deprecated? must check new docs.
-" autocmd User Rails Rnavcommand presenter app/presenters -glob=**/* -suffix=.rb
-
-" Kevin
-" Set up some useful Rails.vim bindings for working with Backbone.js
-" autocmd User Rails Rnavcommand template    app/assets/templates               -glob=**/*  -suffix=.jst.ejs
-" autocmd User Rails Rnavcommand jmodel      app/assets/javascripts/models      -glob=**/*  -suffix=.coffee
-" autocmd User Rails Rnavcommand jview       app/assets/javascripts/views       -glob=**/*  -suffix=.coffee
-" autocmd User Rails Rnavcommand jcollection app/assets/javascripts/collections -glob=**/*  -suffix=.coffee
-" autocmd User Rails Rnavcommand jrouter     app/assets/javascripts/routers     -glob=**/*  -suffix=.coffee
-" autocmd User Rails Rnavcommand jspec       spec/javascripts                   -glob=**/*  -suffix=.coffee

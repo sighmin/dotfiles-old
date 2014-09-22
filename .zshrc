@@ -54,17 +54,19 @@ source $ZSH/oh-my-zsh.sh
 ### User configuration
 
 export PATH="/usr/local/share/npm/bin":$PATH
-export PATH="/usr/texbin":$PATH
+#export PATH="/usr/texbin":$PATH
 export PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin":$PATH
 export PATH="$HOME/.rbenv/bin":$PATH
 export PATH="$HOME/.rbenv/shims":$PATH
-#export PATH="$HOME/.pyenv/bin":$PATH
-#export PATH="$HOME/.pyenv/shims":$PATH
-export PATH="$HOME/.goenv/bin":$PATH
+export PATH="$HOME/.pyenv/bin":$PATH
+export PATH="$HOME/.pyenv/shims":$PATH
+#export PATH="$HOME/.goenv/bin":$PATH
 #export PATH="$HOME/.goenv/shims":$PATH
 export PATH="/usr/local/heroku/bin":$PATH
 export PATH="/usr/local/narwhal/bin":$PATH
 export MANPATH="/usr/local/man:$MANPATH"
+#export PATH="/usr/local/octave/3.8.0/bin":$PATH
+export PATH="/Users/simon/Develop/pebble/PebbleSDK-2.4.1/bin:$PATH"
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
@@ -75,8 +77,14 @@ fi
 
 # Preferred key bindings (vi instead of emacs)
 bindkey -v
+bindkey "^R" history-incremental-search-backward
 # Kill the lag
 export KEYTIMEOUT=1
+
+# Remove beep from autocomplete
+setopt no_beep
+# cd into directory if command is the same as a directory name
+setopt auto_cd
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -86,8 +94,8 @@ export KEYTIMEOUT=1
 
 # rbenv and pyenv
 eval "$(rbenv init -)"
-#eval "$(pyenv init -)"
-eval "$(goenv init -)"
+eval "$(pyenv init -)"
+#eval "$(goenv init -)"
 
 
 ######################################
@@ -108,6 +116,7 @@ alias lsa='ls -lah'
 alias pls='sudo'
 alias please='sudo'
 alias touche='touch'
+alias vlc='/Applications/VLC.app/Contents/MacOS/VLC'
 
 # dev aliases
 alias v='vim'
@@ -119,11 +128,17 @@ alias zc='zeus console'
 alias zd='zeus dbconsole'
 alias gblame='git blame'
 alias gg='git add -A .; git commit -m'
+alias sync='git pull && git push'
+#alias commits='for ref in $(git for-each-ref --sort=-committerdate --format="%(refname)" refs/heads/ refs/remotes ); do git log -n1 $ref --pretty=format:"%Cgreen%cr%Creset %C(yellow)%d%Creset %C(bold blue)<%an>%Creset%n" | cat ; done | awk \"! a[$0]++'
 alias rk='bundle exec rake'
 alias rb='bundle exec ruby'
+alias rt='bundle exec rspec'
+alias rg='bundle exec rake routes | grep'
 
 # project aliases
 alias mds='cd ~/Develop/work/45/ereads/MDS/'
+alias fp='cd ~/Develop/work/45/fenixpro/app/'
+alias pair='export PAIRING=1'
 
 # tmux aliases
 alias ta='tmux attach -t'
@@ -139,11 +154,16 @@ alias msstart='brew services start mysql'
 alias msstop='brew services stop mysql'
 alias msrestart='brew services restart mysql'
 
-# project aliases
+alias precompile='bundle exec rake assets:clean && bundle exec rake assets:precompile'
+alias migrate='bundle exec rake db:migrate && bundle exec rake db:rollback && bundle exec rake db:migrate'
+
+
+# ereadz aliases
 user_name='simon'
 ip_partial='176.9.70'
 alias production="ssh $user_name@$ip_partial.210"
 alias staging="ssh $user_name@$ip_partial.209"
+alias sunspot='sudo killall java && bundle exec rake sunspot:solr:start RAILS_ENV=test; bundle exec rake sunspot:solr:start RAILS_ENV=development'
 
 # command aggregation aliases
 alias tree="find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'"
@@ -151,10 +171,13 @@ alias tree="find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'"
 alias zrc="vim ~/.zshrc"
 alias vrc="vim ~/.vimrc"
 alias trc="vim ~/.tmux.conf"
+alias nodeh="node --harmony"
 
 # betty - siri for command line
 alias betty="~/.betty/main.rb"
 
+alias delswp="find . | grep .swp | xargs rm"
+alias delds="find . | grep .DS_Store | xargs rm"
 
 ######################################
 ### Custom Shell Features
@@ -185,6 +208,15 @@ function gprl {
   repo=`git remote -v | head -1 | sed "s/git@github.com://" | cut -c8-999 | sed "s/\.git .*//"`
   echo Opening list of pull requests for $repo
   open "https://github.com/$repo/pulls"
+}
+
+function sync_dotfiles {
+  cp ~/.vimrc ~/Develop/dotfiles/
+  cp ~/.tmux.conf ~/Develop/dotfiles/
+  cp ~/.zshrc ~/Develop/dotfiles/
+  cp ~/.gitconfig ~/Develop/dotfiles/
+  cp ~/.gitignore ~/Develop/dotfiles/
+  cp ~/.gitignore_global ~/Develop/dotfiles/
 }
 
 ######################################
