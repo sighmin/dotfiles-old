@@ -66,21 +66,25 @@ Plugin 'majutsushi/tagbar'
 Plugin 'xolox/vim-misc'
 " Syntax for emblem
 Plugin 'heartsentwined/vim-emblem'
+" Ember reconfigured portkey for relative navigation of files
+Plugin 'dsawardekar/ember.vim'
 " Show git diff marks in sidebar
 "http://stackoverflow.com/questions/15277241/changing-vim-gutter-color
 Plugin 'airblade/vim-gitgutter'
 " Align stuff
 Plugin 'godlygeek/tabular'
+" Send a buffer to tmux
+Plugin 'jgdavey/tslime.vim'
+" Call dash from within vim
+Plugin 'rizzatti/dash.vim'
 
 " Easy navigation to selections
 "Plugin 'Lokaltog/vim-easymotion'
 "
-" Send a buffer to tmux
-"Plugin 'jgdavey/tslime.vim'
-"
 " Change to airline in favour of powerline
 "Plugin 'Lokaltog/vim-powerline'
 "Plugin 'bling/vim-airline'
+"
 "
 " Match more than chars with %, match words etc
 "Plugin 'jwhitley/vim-matchit'
@@ -123,6 +127,7 @@ let g:Powerline_theme='long'
 "let g:airline_powerline_fonts = 1
 
 " Set ctrl-p's maximum height
+let g:ctrlp_working_path_mode = 0
 let g:ctrlp_max_height = 25
 " Check syntax on buffer read
 let g:syntastic_check_on_open=1
@@ -137,6 +142,10 @@ let g:yankring_replace_n_pkey = '<C-;>'
 " tslime config
 "let g:rspec_command = 'call SendToTmux("zeus test {spec}\n")'
 "let g:rspec_runner = 'os_x_iterm'
+" vim-rspec config not using zeus
+let g:rspec_command = "!rspec --drb {spec}"
+" vim-rspec config using zeus
+"let g:rspec_command = 'call SendToTmux(" (test -e .zeus.sock && zeus test {spec}) || (test ! -e .zeus.sock && nocorrect bundle exec rspec {spec})\n")'
 " CoVim config
 "let CoVim_default_name = 'simon'
 "let CoVim_default_port = '5555'
@@ -161,6 +170,8 @@ let @d='^f>a€kb€kb: Bx'
 let @w="2cwmatch lveldjj$a, as: :pk^dt'i€kb€kb€kb j^dt'i€kb€kb€kbhdf'i#^f,xi =>^j"
 " Cut a line of text to 80 chars at the most convenient word
 let @c="^80lbi€kb"
+" Convert all CamelCase words to snake_case words on current line
+let @v=":s#\(\<\u\l\+\|\l\+\)\(\u\)#\l\1_\l\2#g<cr>"
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CONFIGURATION
@@ -191,8 +202,8 @@ set background=dark
 
 " Set colour schemes differently if pairing
 if exists('$PAIRING')
-  "colorscheme tomorrow-night
-  colorscheme tomorrow-night-bright
+  colorscheme tomorrow-night
+  "colorscheme tomorrow-night-bright
 else
   let g:Powerline_colorscheme='solarized'
   "let g:
@@ -259,6 +270,7 @@ set backspace=indent,eol,start
 set clipboard=unnamed
 " (Hopefully) removes the delay when hitting esc in insert mode
 set noesckeys
+set notimeout
 set ttimeout
 set ttimeoutlen=1
 " Highlight matching braces
@@ -268,6 +280,8 @@ set showmatch
 set wildmenu
 " First <tab> complete to longest matching word, next <tab> invokes a list
 set wildmode=longest,list
+" Wildignore files I don't want to ever open in vim
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*/node_modules/*,*/bower_components/*
 
 " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
 " Source https://github.com/thoughtbot/dotfiles/blob/master/vimrc
@@ -288,6 +302,13 @@ noremap <up> <nop>
 noremap <down> <nop>
 noremap <left> <nop>
 noremap <right> <nop>
+
+" Shortcuts for tab navigation
+nnoremap tl :tabnext<cr>
+nnoremap th :tabprev<cr>
+nnoremap tn :tabnew<cr>
+nnoremap tc :tabclose<cr>
+
 " Removing current search highlight
 map <leader>. :noh<cr>
 " Paste 0 buffer (last yanked contents)
@@ -327,8 +348,20 @@ map <leader>ml :wincmd L<cr>
 " Flip left and right panes
 map <leader>mm :NERDTreeTabsClose<cr>:wincmd l<cr>:wincmd H<cr>:NERDTreeTabsOpen<cr>:wincmd l<cr><C-W>=
 
+" vim-rspec mappings
+map <leader>t :call RunCurrentSpecFile()<CR>
+map <leader>s :call RunNearestSpec()<CR>
+map <leader>l :call RunLastSpec()<CR>
+map <leader>r :call RunAllSpecs()<CR>
+
 " Show marks
 nnoremap ` :ShowMarksOnce<cr>`
+
+" Clear the search buffer when hitting return
+nnoremap <cr> :nohlsearch<cr>
+
+" Toggle between last open buffers
+nnoremap <leader><leader> <c-^>
 
 " Convenient mappings to complete a shell command
 map  <leader>bi :!bundle install<space>
@@ -392,6 +425,7 @@ endif
 " AUTOCMD
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has("autocmd")
+
   " Autoindent with two spaces, always expand tabs
   " These are abbreviations for tabstop, shiftwidth, softtabstop
   autocmd BufNewFile,BufReadPost * set ai ts=2 sw=2 sts=2 et
@@ -408,107 +442,29 @@ if has("autocmd")
 
   " Put these in an autocmd group, so that we can delete them easily.
   augroup vimrcEx
-  au!
+    au!
 
-  " For all text files set 'textwidth' to 78 characters.
-  autocmd FileType text setlocal textwidth=78
+    " For all text files set 'textwidth' to 78 characters.
+    autocmd FileType text setlocal textwidth=78
 
-  " Never wrap slim files
-  autocmd FileType slim setlocal textwidth=0
+    " Never wrap slim files
+    autocmd FileType slim setlocal textwidth=0
 
-  " Remove trailing whitespaces on save
-  autocmd BufWritePre * :%s/\s\+$//e
+    " Remove trailing whitespaces on save
+    autocmd BufWritePre * :%s/\s\+$//e
 
-  " When editing a file, always jump to the last known cursor position.
-  " Don't do it when the position is invalid or when inside an event handler
-  " (happens when dropping a file on gvim).
-  autocmd BufReadPost *
-    \ if line("'\"") > 0 && line("'\"") <= line("$") |
-    \   exe "normal g`\"" |
-    \ endif
+    " When editing a file, always jump to the last known cursor position.
+    " Don't do it when the position is invalid or when inside an event handler
+    " (happens when dropping a file on gvim).
+    autocmd BufReadPost *
+      \ if line("'\"") > 0 && line("'\"") <= line("$") |
+      \   exe "normal g`\"" |
+      \ endif
 
   augroup END
 
+  " Manually set syntax to emblem (not sure why it's not picking it up)
+  autocmd BufRead,BufNewFile *.embl set syntax=emblem
+
 endif
 
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" MAPPINGS
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Cool new stuff to try!
-" ... nothing new here ...
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" KEVIN'S CONFIG TO LOOK AT
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Kevin
-" map <silent> <leader>gs :Gstatus<cr>/not staged<cr>/modified<cr>
-" map <leader>gc :Gcommit<cr>
-
-" Kevin
-" map <leader>bn :bn<cr>
-" map <leader>bp :bp<cr>
-
-" Kevin
-" tab for equals
-" map <leader>te :Tab/^[^=]*\zs/l0l1<cr>
-" tab for hash/json syntax
-" map <leader>th :Tab/^[^:]*\zs/l0l1<cr>
-
-" Kevin
-" map <leader>tp :tabp<cr>
-" map <leader>tn :tabn<cr>
-
-" Kevin
-" map <leader>= <C-w>=
-
-" Kevin
-" select the current method in ruby (or it block in rspec)
-" map <leader>sm /end<cr>?\<def\>\\|\<it\><cr>:noh<cr>V%
-" map <leader>sf :e spec/factories/
-
-" Kevin
-" restart pow
-" map <leader>rp :!touch tmp/restart.txt<cr><cr>:echo "Restarted server"<cr>
-
-" Kevin
-" Convenient mappings for plugin commands
-" map <leader>rm <Plug>SetTmuxVars
-" map <leader>ta :call RunAllSpecs()<cr>
-" map <leader>tt :call RunCurrentSpecFile()<cr>
-" map <leader>tl :call RunNearestSpec()<cr>
-" map <leader>rrt :call RunCurrentTestNoZeus()<cr>
-" map <leader>rrl :call RunCurrentLineInTestNoZeus()<cr>
-" map <leader>rj :!~/Code/chrome-reload<cr><cr>
-"
-" map <leader>sm :RSmodel<space>
-" map <leader>vc :RVcontroller<cr>
-" map <leader>vm :RVmodel<space>
-" map <leader>vv :RVview<cr>
-" map <leader>zv :Rview<cr>
-" map <leader>zc :Rcontroller<cr>
-" map <leader>zm :Rmodel<space>
-
-" Kevin
-" inoremap <c-s> <esc>:w<cr>
-" map <c-s> <c-c>:w<cr>
-" cmap w!! %!sudo tee > /dev/null %
-
-" Kevin
-" if $TMUX != ""
-"   nmap <leader>ggf :call SendToTmux("ggf && ggmc\n")<cr>
-"   nmap <leader>gp :call SendToTmux("gpoc\n")<cr>
-"   map <leader>bi :call SendToTmux("bundle\n")<cr>
-"   map <leader>rz :!tmux send-keys -tzeus C-c zeus space start enter<cr><cr>
-"   nmap <leader>tc :!tmux send-keys -tvim.1 C-c<cr><cr>:echo "Sent C-c to tmux"<cr>
-"   nmap <leader>dbm :call SendToTmux("zeus rake db:migrate\n")<cr>
-"   nmap <leader>dbr :call SendToTmux("zeus rake db:rollback\n")<cr>
-"   nmap <leader>dbn :call SendToTmux("zeus rake db:rollback && zeus rake db:migrate\n")<cr>
-"   nmap <leader>dbt :call SendToTmux("zeus rake db:test:prepare\n")<cr>
-" else
-"   map <leader>bi :!bundle<cr>
-"   nmap <leader>gp :exec ':Git push origin ' . fugitive#head()<cr>
-"   map <leader>dbm :!zeus rake db:migrate<cr>
-"   map <leader>dbr :!zeus rake db:rollback<cr>
-"   nmap <leader>dbt :!zeus rake db:test:prepare<cr>
-" endif

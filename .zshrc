@@ -30,7 +30,7 @@ export UPDATE_ZSH_DAYS=7
 # DISABLE_CORRECTION="true"
 
 # Uncomment following line if you want red dots to be displayed while waiting for completion
-# COMPLETION_WAITING_DOTS="true"
+COMPLETION_WAITING_DOTS="true"
 
 # Uncomment following line if you want to disable marking untracked files under
 # VCS as dirty. This makes repository status check for large repositories much,
@@ -46,7 +46,7 @@ HIST_STAMPS="dd.mm.yyyy"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # I'm considering extracting the aliases I actually use... and leaving the rest.
-plugins=(git brew bundler postgres ruby zeus)
+plugins=(git brew bundler postgres mysql ruby zeus vi-mode wd colored-man emoji-clock nyan)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -54,19 +54,16 @@ source $ZSH/oh-my-zsh.sh
 ### User configuration
 
 export PATH="/usr/local/share/npm/bin":$PATH
-#export PATH="/usr/texbin":$PATH
 export PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin":$PATH
 export PATH="$HOME/.rbenv/bin":$PATH
 export PATH="$HOME/.rbenv/shims":$PATH
 export PATH="$HOME/.pyenv/bin":$PATH
 export PATH="$HOME/.pyenv/shims":$PATH
-#export PATH="$HOME/.goenv/bin":$PATH
-#export PATH="$HOME/.goenv/shims":$PATH
 export PATH="/usr/local/heroku/bin":$PATH
 export PATH="/usr/local/narwhal/bin":$PATH
 export MANPATH="/usr/local/man:$MANPATH"
-#export PATH="/usr/local/octave/3.8.0/bin":$PATH
 export PATH="/Users/simon/Develop/pebble/PebbleSDK-2.4.1/bin:$PATH"
+export PATH="./bin":$PATH
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
@@ -95,7 +92,6 @@ setopt auto_cd
 # rbenv and pyenv
 eval "$(rbenv init -)"
 eval "$(pyenv init -)"
-#eval "$(goenv init -)"
 
 
 ######################################
@@ -121,48 +117,40 @@ alias vlc='/Applications/VLC.app/Contents/MacOS/VLC'
 # dev aliases
 alias v='vim'
 alias b='bundle'
-alias z='zeus'
-alias zr='zeus rake'
-alias zs='zeus server'
-alias zc='zeus console'
-alias zd='zeus dbconsole'
-alias gblame='git blame'
 alias gg='git add -A .; git commit -m'
 alias sync='git pull && git push'
-#alias commits='for ref in $(git for-each-ref --sort=-committerdate --format="%(refname)" refs/heads/ refs/remotes ); do git log -n1 $ref --pretty=format:"%Cgreen%cr%Creset %C(yellow)%d%Creset %C(bold blue)<%an>%Creset%n" | cat ; done | awk \"! a[$0]++'
+alias gf='git fetch'
 alias rk='bundle exec rake'
 alias rb='bundle exec ruby'
 alias rt='bundle exec rspec'
 alias rg='bundle exec rake routes | grep'
 
+# language aliases
+alias py='python'
+alias cl='sbcl'
+alias lisp='sbcl'
+
 # project aliases
 alias mds='cd ~/Develop/work/45/ereads/MDS/'
 alias fp='cd ~/Develop/work/45/fenixpro/app/'
+alias anz='cd ~/Develop/work/45/anz/anz-merchant-portal/'
+alias anzbox='ssh simon@202.167.246.11'
+alias oregano='cd ~/Develop/projects/rebel-coders/oregano/oregano-prototype/'
 alias pair='export PAIRING=1'
+alias til='cd ~/Develop/work/45/happy/til/'
+alias happy='cd ~/Develop/work/45/happy/'
+alias dotfiles='cd ~/Develop/dotfiles/'
 
 # tmux aliases
 alias ta='tmux attach -t'
 alias ts='tmux new-session -s'
 alias tl='tmux list-sessions'
 alias tm='tmux show-messages'
-
-# db aliases
-alias pgstart='brew services start postgres'
-alias pgstop='brew services stop postgres'
-alias pgrestart='brew services restart postgres'
-alias msstart='brew services start mysql'
-alias msstop='brew services stop mysql'
-alias msrestart='brew services restart mysql'
-
-alias precompile='bundle exec rake assets:clean && bundle exec rake assets:precompile'
-alias migrate='bundle exec rake db:migrate && bundle exec rake db:rollback && bundle exec rake db:migrate'
-
+alias tk='tmux kill-session -t'
 
 # ereadz aliases
-user_name='simon'
-ip_partial='176.9.70'
-alias production="ssh $user_name@$ip_partial.210"
-alias staging="ssh $user_name@$ip_partial.209"
+alias precompile='bundle exec rake assets:clean && bundle exec rake assets:precompile'
+alias migrate='bundle exec rake db:migrate && bundle exec rake db:rollback && bundle exec rake db:migrate'
 alias sunspot='sudo killall java && bundle exec rake sunspot:solr:start RAILS_ENV=test; bundle exec rake sunspot:solr:start RAILS_ENV=development'
 
 # command aggregation aliases
@@ -178,6 +166,12 @@ alias betty="~/.betty/main.rb"
 
 alias delswp="find . | grep .swp | xargs rm"
 alias delds="find . | grep .DS_Store | xargs rm"
+alias eclock="emoji-clock"
+#alias coursera="coursera -n --"
+
+function coursera {
+  /usr/local/bin/coursera -n -- $@
+}
 
 ######################################
 ### Custom Shell Features
@@ -189,6 +183,38 @@ foreground-vi() {
 zle -N foreground-vi
 bindkey '^Z' foreground-vi
 
+# open github for current repo
+function gh {
+  repo=`git remote -v | head -1 | sed "s/git@github.com://" | cut -c8-999 | sed "s/\.git .*//"`
+  echo Opening Github for $repo
+
+  open "https://github.com/$repo"
+}
+
+# push origin current_branch
+function gpoc {
+  echo Pushing $(current_branch)
+  git push origin $(current_branch)
+}
+
+# pull origin current_branch
+function gloc {
+  echo Pulling $(current_branch)
+  git pull origin $(current_branch)
+}
+
+# fetch origin current_branch
+function gfoc {
+echo Fetching origin/$(current_branch)
+  git fetch origin $(current_branch)
+}
+
+# merge origin current_branch
+function gmoc {
+echo Merging origin/$(current_branch) into $(current_branch)
+  git merge origin/$(current_branch)
+}
+
 # create pull request into specified branch (develop if none specified)
 function gpr {
   echo Opening pull request for $(current_branch)
@@ -197,7 +223,7 @@ function gpr {
   if [ $1 ]; then
     branch="$1...$(current_branch)"
   else
-    branch=$(current_branch)
+    branch="develop...$(current_branch)"
   fi
 
   open "https://github.com/$repo/compare/$branch?expand=1"
@@ -210,6 +236,58 @@ function gprl {
   open "https://github.com/$repo/pulls"
 }
 
+function service {
+  if [ $1 ]; then
+    case $1 in
+      mysql)
+        case $2 in
+          start)
+            mysql.server start
+            ;;
+          stop)
+            mysql.server stop
+            ;;
+          *)
+            echo "Command $2 not supported for service $1"
+            exit 1
+            ;;
+        esac
+        ;;
+      postgres)
+        case $2 in
+          start)
+            pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
+            ;;
+          stop)
+            pg_ctl -D /usr/local/var/postgres stop -s -m fast
+            ;;
+          *)
+            echo "Command $2 not supported for service $1"
+            exit 1
+            ;;
+        esac
+        ;;
+      redis)
+        case $2 in
+          start)
+            redis-server /usr/local/etc/redis.conf
+            ;;
+          *)
+            echo "Command $2 not supported for service $1"
+            exit 1
+            ;;
+        esac
+        ;;
+      *)
+        echo "Service $1 not supported"
+        exit 1
+        ;;
+    esac
+  else
+    echo "Usage: $0 SERVICE_NAME [start|stop|restart]"
+  fi
+}
+
 function sync_dotfiles {
   cp ~/.vimrc ~/Develop/dotfiles/
   cp ~/.tmux.conf ~/Develop/dotfiles/
@@ -217,10 +295,11 @@ function sync_dotfiles {
   cp ~/.gitconfig ~/Develop/dotfiles/
   cp ~/.gitignore ~/Develop/dotfiles/
   cp ~/.gitignore_global ~/Develop/dotfiles/
+  cp -R ~/.tmuxinator ~/Develop/dotfiles/
 }
 
 ######################################
-### ENVIRONMENT
+### ENVIRONMENT VARIABLES
 
 # rails devise default user for railsapps composer
 export ADMIN_NAME="Admin Guy"
