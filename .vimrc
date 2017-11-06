@@ -41,7 +41,6 @@ Plugin 'scrooloose/syntastic'
 Plugin 'scrooloose/nerdtree'
 " Awesome status line
 Plugin 'Lokaltog/vim-powerline'
-Plugin 'stephenmckinney/vim-solarized-powerline'
 " Provides nerdtree toggle function (mapped to <leader>n)
 Plugin 'jistr/vim-nerdtree-tabs'
 " Sublime Text style multiple cursors (put cursor on a word, then hit C-n)
@@ -64,10 +63,6 @@ Plugin 'xolox/vim-easytags'
 Plugin 'majutsushi/tagbar'
 " Dependency of xolox's vim plugins
 Plugin 'xolox/vim-misc'
-" Syntax for emblem
-Plugin 'heartsentwined/vim-emblem'
-" Ember reconfigured portkey for relative navigation of files
-Plugin 'dsawardekar/ember.vim'
 " Show git diff marks in sidebar
 "http://stackoverflow.com/questions/15277241/changing-vim-gutter-color
 Plugin 'airblade/vim-gitgutter'
@@ -75,35 +70,18 @@ Plugin 'airblade/vim-gitgutter'
 Plugin 'godlygeek/tabular'
 " Send a buffer to tmux
 Plugin 'jgdavey/tslime.vim'
-" Call dash from within vim
-Plugin 'rizzatti/dash.vim'
-
-" Easy navigation to selections
-"Plugin 'Lokaltog/vim-easymotion'
-"
-" Change to airline in favour of powerline
-"Plugin 'Lokaltog/vim-powerline'
-"Plugin 'bling/vim-airline'
-"
-"
-" Match more than chars with %, match words etc
-"Plugin 'jwhitley/vim-matchit'
-"
-" Defines a new text object representing lines of code at the same indent level
-"Plugin 'michaeljsmith/vim-indent-object'
-"
-" Some scripts Kevin uses
-"Plugin 'ecomba/vim-ruby-refactoring'
-"Plugin 'guns/vim-clojure-static'
-"Plugin 'jnwhiteh/vim-golang'
-"Plugin 'adamlowe/vim-slurper'
-"
-" This looks cool but is too unstable atm
-"Plugin 'FredKSchott/CoVim'
-"
-"
 " Elixir lang config
 Plugin 'elixir-lang/vim-elixir'
+" Javascript
+Plugin 'jelera/vim-javascript-syntax'
+" Ember
+Plugin 'https://github.com/joukevandermaas/vim-ember-hbs.git'
+" More Ember
+Plugin 'dsawardekar/ember.vim'
+" Run tests!
+Plugin 'janko-m/vim-test'
+" Helper for minitest-focus
+Plugin 'jcqvisser/focus_toggle'
 
 call vundle#end()
 
@@ -118,13 +96,9 @@ set tags='./tags'
 let g:easytags_dynamic_files=2
 " Do not automatically update highlights (slows things down)
 let g:easytags_auto_highlight=0
-" Update tags every 8 secs on inactivity
-let g:easytags_updatetime_min=8000
-
-" Fancy status line delimeters (block arrow thing)
-let g:Powerline_theme='long'
-"let g:Powerline_symbols = 'fancy'
-"let g:airline_powerline_fonts = 1
+let g:easytags_syntax_keyword = 'always'
+let g:easytags_auto_highlight = 0
+let g:easytags_auto_update = 0
 
 " Set ctrl-p's maximum height
 let g:ctrlp_working_path_mode = 0
@@ -139,16 +113,7 @@ let delimitMate_expand_space = 1
 let NERDTreeShowHidden=1
 let g:yankring_replace_n_pkey = '<C-;>'
 
-" tslime config
-"let g:rspec_command = 'call SendToTmux("zeus test {spec}\n")'
-"let g:rspec_runner = 'os_x_iterm'
-" vim-rspec config not using zeus
 let g:rspec_command = "!rspec --drb {spec}"
-" vim-rspec config using zeus
-"let g:rspec_command = 'call SendToTmux(" (test -e .zeus.sock && zeus test {spec}) || (test ! -e .zeus.sock && nocorrect bundle exec rspec {spec})\n")'
-" CoVim config
-"let CoVim_default_name = 'simon'
-"let CoVim_default_port = '5555'
 
 " Add change in cursor when in vim in tmux
 if exists('$TMUX')
@@ -163,15 +128,13 @@ endif
 " REUSEABLE MACROS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Change hashrocket (with spaces) to ruby 1.9.x hash syntax
-let @s='^f>a€kb€kb€kb:Bx'
+let @s='^f>aÂ€kbÂ€kbÂ€kb:Bx'
 " Change hashrocket (with no spaces) to ruby 1.9.x hash syntax
-let @d='^f>a€kb€kb: Bx'
-" Refactor 3 line rails 2 route to a 1 line rails 3 route
-let @w="2cwmatch lveldjj$a, as: :pk^dt'i€kb€kb€kb j^dt'i€kb€kb€kbhdf'i#^f,xi =>^j"
-" Cut a line of text to 80 chars at the most convenient word
-let @c="^80lbi€kb"
-" Convert all CamelCase words to snake_case words on current line
-let @v=":s#\(\<\u\l\+\|\l\+\)\(\u\)#\l\1_\l\2#g<cr>"
+let @d='^f>aÂ€kbÂ€kb: Bx'
+" Cut a line of text at the first comma found
+let @c="^f,al"
+" Add a comma to the end of the line
+let @a="A,j"
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CONFIGURATION
@@ -191,26 +154,10 @@ set t_Co=256
 
 " Set background
 "set background=light
-set background=dark
+"set background=dark
 
 " Colour schemes available:
-"colorscheme tomorrow
-"colorscheme tomorrow-night
-"colorscheme tomorrow-night-bright
-"colorscheme grb256
-"colorscheme solarized
-
-" Set colour schemes differently if pairing
-if exists('$PAIRING')
-  colorscheme tomorrow-night
-  "colorscheme tomorrow-night-bright
-else
-  let g:Powerline_colorscheme='solarized'
-  "let g:
-  colorscheme solarized
-  set background=light
-endif
-
+colorscheme Tomorrow-Night
 
 """""""""""""""""""""""
 " End color config    "
@@ -248,8 +195,6 @@ set ignorecase
 set smartcase
 " Enable line numbers to the left of window
 set number
-" Enable line numbers relative to cursor line position
-set relativenumber
 " Offset when scrolling a file larger than window
 set scrolloff=5
 " Always show the status bar
@@ -363,6 +308,11 @@ nnoremap <cr> :nohlsearch<cr>
 " Toggle between last open buffers
 nnoremap <leader><leader> <c-^>
 
+" vim-test shortcuts
+nmap <silent> <leader>t :TestNearest<CR>
+nmap <silent> <leader>tf :TestFile<CR>
+nmap <silent> <leader>ts :TestSuite<CR>
+
 " Convenient mappings to complete a shell command
 map  <leader>bi :!bundle install<space>
 map  <leader>bu :!bundle update<space>
@@ -450,6 +400,9 @@ if has("autocmd")
     " Never wrap slim files
     autocmd FileType slim setlocal textwidth=0
 
+    " Python 4 spaces
+    autocmd FileType py set expandtab ts=4 sw=4 ai
+
     " Remove trailing whitespaces on save
     autocmd BufWritePre * :%s/\s\+$//e
 
@@ -466,5 +419,9 @@ if has("autocmd")
   " Manually set syntax to emblem (not sure why it's not picking it up)
   autocmd BufRead,BufNewFile *.embl set syntax=emblem
 
-endif
+  " Manually set syntax to slim (not sure why it's not picking it up)
+  autocmd BufRead,BufNewFile *.inky set syntax=slim
 
+  " Manually set syntax to javascript (not sure why it's not picking it up)
+  autocmd BufRead,BufNewFile *.es6 set syntax=javascript
+endif

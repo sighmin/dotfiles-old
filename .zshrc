@@ -1,76 +1,69 @@
-# Path to your oh-my-zsh configuration.
-ZSH=$HOME/.oh-my-zsh
+# Path to your oh-my-zsh installation.
+export ZSH="/Users/simonvandyk/.oh-my-zsh"
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-# ZSH_THEME="robbyrussell"
-ZSH_THEME="simon"
-# ZSH_THEME="doubleend"
-# ZSH_THEME="blinks"
-# ZSH_THEME="bira"
+ZSH_THEME="bira"
 
-# Set to this to use case-sensitive completion
+# Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
 
-# Uncomment this to disable bi-weekly auto-update checks
+# Uncomment the following line to use hyphen-insensitive completion. Case
+# sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
+
+# Uncomment the following line to disable bi-weekly auto-update checks.
 # DISABLE_AUTO_UPDATE="true"
 
-# Uncomment to change how often before auto-updates occur? (in days)
-export UPDATE_ZSH_DAYS=7
+# Uncomment the following line to change how often to auto-update (in days).
+# export UPDATE_ZSH_DAYS=13
 
-# Uncomment following line if you want to disable colors in ls
+# Uncomment the following line to disable colors in ls.
 # DISABLE_LS_COLORS="true"
 
-# Uncomment following line if you want to disable autosetting terminal title.
+# Uncomment the following line to disable auto-setting terminal title.
 # DISABLE_AUTO_TITLE="true"
 
-# Uncomment following line if you want to disable command autocorrection
-# DISABLE_CORRECTION="true"
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
 
-# Uncomment following line if you want red dots to be displayed while waiting for completion
-COMPLETION_WAITING_DOTS="true"
+# Uncomment the following line to display red dots whilst waiting for completion.
+# COMPLETION_WAITING_DOTS="true"
 
-# Uncomment following line if you want to disable marking untracked files under
-# VCS as dirty. This makes repository status check for large repositories much,
-# much faster.
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
 # DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-# Uncomment following line if you want to  shown in the command execution time stamp
-# in the history command output. The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|
-# yyyy-mm-dd
-HIST_STAMPS="dd.mm.yyyy"
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# HIST_STAMPS="mm/dd/yyyy"
+
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-# I'm considering extracting the aliases I actually use... and leaving the rest.
-plugins=(git brew bundler postgres mysql ruby zeus vi-mode wd colored-man emoji-clock nyan)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(git zsh-syntax-highlighting dotenv)
 
-source $ZSH/oh-my-zsh.sh
+eval "$(rbenv init -)"
 
-#############################################
-### User configuration
+# User configuration
+# Allow Erlang history in iex with OTP 20
+export ERL_AFLAGS="-kernel shell_history enabled"
 
-export PATH="/usr/local/share/npm/bin":$PATH
+# export PATH="/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+# export MANPATH="/usr/local/man:$MANPATH"
 export PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin":$PATH
-export PATH="$HOME/.rbenv/bin":$PATH
-export PATH="$HOME/.rbenv/shims":$PATH
-export PATH="$HOME/.pyenv/bin":$PATH
-export PATH="$HOME/.pyenv/shims":$PATH
-export PATH="/usr/local/heroku/bin":$PATH
-export PATH="/usr/local/narwhal/bin":$PATH
-export MANPATH="/usr/local/man:$MANPATH"
-export PATH="/Users/simon/Develop/pebble/PebbleSDK-2.4.1/bin:$PATH"
+export PATH="$HOME/.rbenv/bin:$PATH"
+export PATH="$HOME/.rbenv/shims:$PATH"
 export PATH="./bin":$PATH
-
-# Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='vim'
-else
-  export EDITOR='vim' # export EDITOR='mvim'
-fi
+export PATH="/Users/simonvandyk/Code/miniconda3/bin:$PATH"
 
 # Preferred key bindings (vi instead of emacs)
 bindkey -v
@@ -78,20 +71,41 @@ bindkey "^R" history-incremental-search-backward
 # Kill the lag
 export KEYTIMEOUT=1
 
-# Remove beep from autocomplete
-setopt no_beep
-# cd into directory if command is the same as a directory name
-setopt auto_cd
+source $ZSH/oh-my-zsh.sh
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='mvim'
+# fi
+export EDITOR='vim'
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
+# bells suck
+setopt nobeep
+
+# don't error if a file cannot be found
+# http://zsh.sourceforge.net/Doc/Release/Options.html#index-NOMATCH
+# https://robots.thoughtbot.com/how-to-use-arguments-in-a-rake-task
+unsetopt nomatch
+
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
-# rbenv and pyenv
-eval "$(rbenv init -)"
-eval "$(pyenv init -)"
+# Set personal aliases, overriding those provided by oh-my-zsh libs,
+# plugins, and themes. Aliases can be placed here, though oh-my-zsh
+# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
 
 
 ######################################
@@ -117,13 +131,19 @@ alias vlc='/Applications/VLC.app/Contents/MacOS/VLC'
 # dev aliases
 alias v='vim'
 alias b='bundle'
-alias gg='git add -A .; git commit -m'
-alias sync='git pull && git push'
-alias gf='git fetch'
-alias rk='bundle exec rake'
-alias rb='bundle exec ruby'
-alias rt='bundle exec rspec'
-alias rg='bundle exec rake routes | grep'
+alias r='bin/rake'
+alias ss='spring stop'
+#alias gg='git add -A .; git commit -m'
+alias tgpoc='bin/rails test && gpoc'
+function t {
+  rails t $@
+}
+function st {
+  rails test:system $@
+}
+function pt {
+  pytest -k $@
+}
 
 # language aliases
 alias py='python'
@@ -131,15 +151,8 @@ alias cl='sbcl'
 alias lisp='sbcl'
 
 # project aliases
-alias mds='cd ~/Develop/work/45/ereads/MDS/'
-alias fp='cd ~/Develop/work/45/fenixpro/app/'
-alias anz='cd ~/Develop/work/45/anz/anz-merchant-portal/'
-alias anzbox='ssh simon@202.167.246.11'
-alias oregano='cd ~/Develop/projects/rebel-coders/oregano/oregano-prototype/'
-alias pair='export PAIRING=1'
-alias til='cd ~/Develop/work/45/happy/til/'
-alias happy='cd ~/Develop/work/45/happy/'
-alias dotfiles='cd ~/Develop/dotfiles/'
+alias dotfiles='cd ~/Code/dotfiles/'
+alias resetcamera='sudo killall VDCAssistant'
 
 # tmux aliases
 alias ta='tmux attach -t'
@@ -148,29 +161,25 @@ alias tl='tmux list-sessions'
 alias tm='tmux show-messages'
 alias tk='tmux kill-session -t'
 
-# ereadz aliases
-alias precompile='bundle exec rake assets:clean && bundle exec rake assets:precompile'
-alias migrate='bundle exec rake db:migrate && bundle exec rake db:rollback && bundle exec rake db:migrate'
-alias sunspot='sudo killall java && bundle exec rake sunspot:solr:start RAILS_ENV=test; bundle exec rake sunspot:solr:start RAILS_ENV=development'
-
 # command aggregation aliases
 alias tree="find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'"
 # .*rc file changes
 alias zrc="vim ~/.zshrc"
 alias vrc="vim ~/.vimrc"
 alias trc="vim ~/.tmux.conf"
-alias nodeh="node --harmony"
+# tensorflow
+alias atf="source ~/tensorflow/bin/activate"
+alias dtf="deactivate"
+alias gci="tmuxinator start gci"
+alias ret="tmuxinator start ret"
+alias nerve="tmuxinator start nerve"
+alias migrate="rake db:migrate && rake db:test:prepare"
 
-# betty - siri for command line
-alias betty="~/.betty/main.rb"
+# Project aliases
+alias p="ssh-add -K ~/.ssh/id_rsa && z p && tmux"
 
-alias delswp="find . | grep .swp | xargs rm"
-alias delds="find . | grep .DS_Store | xargs rm"
-alias eclock="emoji-clock"
-#alias coursera="coursera -n --"
-
-function coursera {
-  /usr/local/bin/coursera -n -- $@
+function git_churn {
+  git log --all -M -C --name-only | grep -E '^(web|app|lib)/' | sort | uniq -c | sort | awk 'BEGIN {print "count,file"} {print $1 "," $2}' > out.csv | cat
 }
 
 ######################################
@@ -215,10 +224,22 @@ echo Merging origin/$(current_branch) into $(current_branch)
   git merge origin/$(current_branch)
 }
 
+# pull origin master
+function glom {
+  echo Pulling master
+  git pull origin master
+}
+
+# pull origin develop
+function glod {
+  echo Pulling develop
+  git pull origin develop
+}
+
 # create pull request into specified branch (develop if none specified)
 function gpr {
   echo Opening pull request for $(current_branch)
-  repo=`git remote -v | head -1 | sed "s/git@github.com://" | cut -c8-999 | sed "s/\.git .*//"`
+  repo=`git remote -v | grep origin | head -1 | sed "s/git@github.com://" | cut -c8-999 | sed "s/\.git .*//"`
   branch=""
   if [ $1 ]; then
     branch="$1...$(current_branch)"
@@ -236,84 +257,43 @@ function gprl {
   open "https://github.com/$repo/pulls"
 }
 
-function service {
-  if [ $1 ]; then
-    case $1 in
-      mysql)
-        case $2 in
-          start)
-            mysql.server start
-            ;;
-          stop)
-            mysql.server stop
-            ;;
-          *)
-            echo "Command $2 not supported for service $1"
-            exit 1
-            ;;
-        esac
-        ;;
-      postgres)
-        case $2 in
-          start)
-            pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
-            ;;
-          stop)
-            pg_ctl -D /usr/local/var/postgres stop -s -m fast
-            ;;
-          *)
-            echo "Command $2 not supported for service $1"
-            exit 1
-            ;;
-        esac
-        ;;
-      redis)
-        case $2 in
-          start)
-            redis-server /usr/local/etc/redis.conf
-            ;;
-          *)
-            echo "Command $2 not supported for service $1"
-            exit 1
-            ;;
-        esac
-        ;;
-      *)
-        echo "Service $1 not supported"
-        exit 1
-        ;;
-    esac
+# safe push to remote & create PR
+function gpush {
+  bin/rails t && \
+    git push origin $(current_branch) -u && \
+    gpr
+}
+
+# rake routes grep
+function rr() {
+  if [[ -n $1 ]]
+  then
+    ./rake routes | grep $1
   else
-    echo "Usage: $0 SERVICE_NAME [start|stop|restart]"
+    ./rake routes
   fi
 }
 
-function sync_dotfiles {
-  cp ~/.vimrc ~/Develop/dotfiles/
-  cp ~/.tmux.conf ~/Develop/dotfiles/
-  cp ~/.zshrc ~/Develop/dotfiles/
-  cp ~/.gitconfig ~/Develop/dotfiles/
-  cp ~/.gitignore ~/Develop/dotfiles/
-  cp ~/.gitignore_global ~/Develop/dotfiles/
-  cp -R ~/.tmuxinator ~/Develop/dotfiles/
+# file sharing
+function shareit() {
+  ruby -rwebrick -e "WEBrick::HTTPServer.new(:Port => 3096, :DocumentRoot => ENV['HOME']).start"
 }
 
-######################################
-### ENVIRONMENT VARIABLES
+LUNCHY_DIR=$(dirname `gem which lunchy`)/../extras
+if [ -f $LUNCHY_DIR/lunchy-completion.zsh ]; then
+  . $LUNCHY_DIR/lunchy-completion.zsh
+fi
 
-# rails devise default user for railsapps composer
-export ADMIN_NAME="Admin Guy"
-export ADMIN_EMAIL="admin@example.com"
-export ADMIN_PASSWORD="password123"
+# Z: fuzzy cd
+. `brew --prefix`/etc/profile.d/z.sh
+. $HOME/.asdf/asdf.sh
+. $HOME/.asdf/completions/asdf.bash
 
-# env variables
-export NODE_PATH=/usr/local/lib/node
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-export GOPATH="$HOME/.goenv/bin"
-export NARWHAL_ENGINE=jsc
-export CAPP_BUILD=$HOME/.cappbuild
-export SSL_CERT_FILE=/usr/local/opt/curl-ca-bundle/share/ca-bundle.crt
+# Share history across tmux panes
+setopt histappend
+setopt histverify
+HISTCONTROL="ignoreboth"
+PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
-# fish like shell highlighting
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# added by travis gem
+[ -f /Users/simonvandyk/.travis/travis.sh ] && source /Users/simonvandyk/.travis/travis.sh
