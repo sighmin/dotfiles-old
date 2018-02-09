@@ -134,7 +134,7 @@ alias b='bundle'
 alias r='bin/rake'
 alias ss='spring stop'
 #alias gg='git add -A .; git commit -m'
-alias tgpoc='bin/rails test && gpoc'
+alias tgpoc='cd lib/calculator && bin/t && cd ../../ && bin/rails test && gpoc'
 function t {
   rails t $@
 }
@@ -170,7 +170,12 @@ alias trc="vim ~/.tmux.conf"
 # tensorflow
 alias atf="source ~/tensorflow/bin/activate"
 alias dtf="deactivate"
+alias dirt="tmuxinator start dirt"
 alias gci="tmuxinator start gci"
+alias gcipy="tmuxinator start gcipy"
+alias makerails="tmuxinator start make-rails"
+alias gcidebug="tmuxinator start gcidebug"
+alias gcidebugprod="tmuxinator start gcidebugprod"
 alias ret="tmuxinator start ret"
 alias nerve="tmuxinator start nerve"
 alias migrate="rake db:migrate && rake db:test:prepare"
