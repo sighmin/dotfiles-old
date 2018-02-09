@@ -32,13 +32,9 @@ Random git config, basically for me.
 ### Others
 Brewfile for replicating some of the brews that I like if my machine were destroyed / stolen by a rogue beaver of sorts.
 
-## Colour
-*I am quite opinionated about my colour scheme*. All props go to http://ethanschoonover.com/solarized for his awesome work on solarized.
+### import-these
 
-tmux / vim / shell screenshot
-
-![Missing image](https://dl.dropboxusercontent.com/u/4042547/sighmin-dotfiles-screenshot.png)
-
+See the readme in this directory
 
 ## License
 
