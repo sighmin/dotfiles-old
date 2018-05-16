@@ -1,17 +1,1 @@
-### This is a white list git ignore file ###
-
-# Ignore everything
-*
-
-# White list files
-# ... for git:
-!.gitignore
-
-# ... for dot files:
-!.gitconfig
-!.gitignore_global
-!.netrc
-!.irbrc
-!.vimrc
-!.zshrc
-
+.DS_Store
