@@ -40,7 +40,9 @@ Plugin 'scrooloose/syntastic'
 " Awesome directory listings (try <leader>n )
 Plugin 'scrooloose/nerdtree'
 " Awesome status line
-Plugin 'Lokaltog/vim-powerline'
+"Plugin 'Lokaltog/vim-powerline'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 " Provides nerdtree toggle function (mapped to <leader>n)
 Plugin 'jistr/vim-nerdtree-tabs'
 " Sublime Text style multiple cursors (put cursor on a word, then hit C-n)
@@ -82,6 +84,23 @@ Plugin 'dsawardekar/ember.vim'
 Plugin 'janko-m/vim-test'
 " Helper for minitest-focus
 Plugin 'jcqvisser/focus_toggle'
+" Material design colour scheme
+Plugin 'NLKNguyen/papercolor-theme'
+" Color scheme
+Plugin 'skielbasa/vim-material-monokai'
+" Color scheme
+Plugin 'tyrannicaltoucan/vim-quantum'
+" Color scheme
+Plugin 'skreek/skeletor.vim'
+" Color scheme
+Plugin 'nightsense/stellarized'
+" Color scheme
+Plugin 'chriskempson/base16-vim'
+" Text object manipulation https://github.com/wellle/targets.vim#installation
+Plugin 'wellle/targets.vim'
+" Vim for writing
+Plugin 'reedes/vim-pencil'
+
 
 call vundle#end()
 
@@ -114,6 +133,8 @@ let NERDTreeShowHidden=1
 let g:yankring_replace_n_pkey = '<C-;>'
 
 let g:rspec_command = "!rspec --drb {spec}"
+let g:airline_powerline_fonts = 1
+let g:airline_theme='base16'
 
 " Add change in cursor when in vim in tmux
 if exists('$TMUX')
@@ -154,22 +175,28 @@ set t_Co=256
 
 " Set background
 "set background=light
-"set background=dark
+set background=dark
 
 " Colour schemes available:
-colorscheme Tomorrow-Night
+let base16colorspace=256  " Access colors present in 256 colorspace
+"colorscheme Tomorrow-Night
+colorscheme base16-ocean
+"colorscheme PaperColor
+"colorscheme skeletor
+
+set termguicolors
+"colorscheme material-monokai
+
+" Enable italic comments in vim
+"" I tried really hard to get this right :/
+"set t_ZH=^[[3m
+"set t_ZR=^[[23m
+"highlight Comment cterm=italic
+"highlight Comment ctermfg=68
 
 """""""""""""""""""""""
 " End color config    "
 """""""""""""""""""""""
-
-" Set font & size in gui vim (macvim in this case)
-if has('gui_running')
-  if has('gui_macvim')
-    set guifont=Menlo\ Regular:h14
-  endif
-endif
-
 " Split window appears to the right of current
 set splitright
 " Split window appears beneath current
@@ -236,6 +263,7 @@ if executable('ag')
 
   " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
   let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+  let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|__pycache__'
 endif
 
 
@@ -261,7 +289,7 @@ map <leader>. :noh<cr>
 " Toggle nerd tree
 map <leader>n :NERDTreeTabsToggle<cr>
 " Toggle tagbar
-map <leader>b :TagbarToggle<cr>
+map <leader>b :TagbarToggle<cr><cr>
 " Close current buffer
 map <leader>bd :bd!<cr>
 " Close all open buffers
@@ -401,7 +429,7 @@ if has("autocmd")
     autocmd FileType slim setlocal textwidth=0
 
     " Python 4 spaces
-    autocmd FileType py set expandtab ts=4 sw=4 ai
+    autocmd FileType py set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
 
     " Remove trailing whitespaces on save
     autocmd BufWritePre * :%s/\s\+$//e
@@ -424,4 +452,11 @@ if has("autocmd")
 
   " Manually set syntax to javascript (not sure why it's not picking it up)
   autocmd BufRead,BufNewFile *.es6 set syntax=javascript
+
+  " Vim for writing!
+  augroup pencil
+    autocmd!
+    autocmd FileType markdown,mkd,md call pencil#init()
+    autocmd FileType text            call pencil#init()
+  augroup END
 endif

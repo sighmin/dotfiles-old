@@ -5,7 +5,8 @@ export ZSH="/Users/simonvandyk/.oh-my-zsh"
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="bira"
+#ZSH_THEME="bira"
+ZSH_THEME="spaceship"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -49,7 +50,7 @@ ZSH_THEME="bira"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-syntax-highlighting dotenv)
+plugins=(git zsh-syntax-highlighting dotenv vi-mode)
 
 eval "$(rbenv init -)"
 
@@ -59,11 +60,12 @@ export ERL_AFLAGS="-kernel shell_history enabled"
 
 # export PATH="/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 # export MANPATH="/usr/local/man:$MANPATH"
+export PATH="/usr/local/opt/qt/bin:$PATH"
 export PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin":$PATH
-export PATH="$HOME/.rbenv/bin:$PATH"
-export PATH="$HOME/.rbenv/shims:$PATH"
+#export PATH="$HOME/.rbenv/bin:$PATH"
+#export PATH="$HOME/.rbenv/shims:$PATH"
 export PATH="./bin":$PATH
-export PATH="/Users/simonvandyk/Code/miniconda3/bin:$PATH"
+export PATH="/Users/simonvandyk/miniconda3/bin:$PATH"
 
 # Preferred key bindings (vi instead of emacs)
 bindkey -v
@@ -170,18 +172,14 @@ alias trc="vim ~/.tmux.conf"
 # tensorflow
 alias atf="source ~/tensorflow/bin/activate"
 alias dtf="deactivate"
-alias dirt="tmuxinator start dirt"
 alias gci="tmuxinator start gci"
 alias gcipy="tmuxinator start gcipy"
-alias makerails="tmuxinator start make-rails"
-alias gcidebug="tmuxinator start gcidebug"
-alias gcidebugprod="tmuxinator start gcidebugprod"
-alias ret="tmuxinator start ret"
-alias nerve="tmuxinator start nerve"
+alias prospect="tmuxinator start prospect"
+alias marsrover="tmuxinator start marsrover"
 alias migrate="rake db:migrate && rake db:test:prepare"
-
-# Project aliases
-alias p="ssh-add -K ~/.ssh/id_rsa && z p && tmux"
+alias steam="cd '/Users/simonvandyk/.wine/drive_c/Program Files/Steam' && wine Steam.exe"
+alias fr=$(which face_recognition)
+alias did="vim +'normal Go' +'r!date' ~/did.txt"
 
 function git_churn {
   git log --all -M -C --name-only | grep -E '^(web|app|lib)/' | sort | uniq -c | sort | awk 'BEGIN {print "count,file"} {print $1 "," $2}' > out.csv | cat
@@ -291,8 +289,6 @@ fi
 
 # Z: fuzzy cd
 . `brew --prefix`/etc/profile.d/z.sh
-. $HOME/.asdf/asdf.sh
-. $HOME/.asdf/completions/asdf.bash
 
 # Share history across tmux panes
 setopt histappend
@@ -302,3 +298,49 @@ PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 # added by travis gem
 [ -f /Users/simonvandyk/.travis/travis.sh ] && source /Users/simonvandyk/.travis/travis.sh
+
+# z.sh syntax highlighting
+source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# ASDF
+. $HOME/.asdf/asdf.sh
+. $HOME/.asdf/completions/asdf.bash
+
+# Docker nonsense
+#eval "$(docker-machine env default)"
+
+SPACESHIP_PROMPT_ORDER=(
+  time          # Time stampts section
+  user          # Username section
+  host          # Hostname section
+  dir           # Current directory section
+  git           # Git section (git_branch + git_status)
+  #hg            # Mercurial section (hg_branch  + hg_status)
+  #package       # Package version
+  #node          # Node.js section
+  #ruby          # Ruby section
+  #elixir        # Elixir section
+  #xcode         # Xcode section
+  #swift         # Swift section
+  #golang        # Go section
+  #php           # PHP section
+  #rust          # Rust section
+  #haskell       # Haskell Stack section
+  #julia         # Julia section
+  docker        # Docker section
+  aws           # Amazon Web Services section
+  venv          # virtualenv section
+  #conda         # conda virtualenv section
+  #pyenv         # Pyenv section
+  #dotnet        # .NET section
+  #ember         # Ember.js section
+  kubecontext   # Kubectl context section
+  exec_time     # Execution time
+  line_sep      # Line break
+  battery       # Battery level and status
+  #vi_mode       # Vi-mode indicator
+  jobs          # Backgound jobs indicator
+  exit_code     # Exit code section
+  char          # Prompt character
+)
+source "/Users/simonvandyk/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
