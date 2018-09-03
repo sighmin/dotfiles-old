@@ -174,14 +174,14 @@ syntax on
 set t_Co=256
 
 " Set background
-"set background=light
-set background=dark
+set background=light
+"set background=dark
 
 " Colour schemes available:
 let base16colorspace=256  " Access colors present in 256 colorspace
 "colorscheme Tomorrow-Night
-colorscheme base16-ocean
-"colorscheme PaperColor
+"colorscheme base16-ocean
+colorscheme PaperColor
 "colorscheme skeletor
 
 set termguicolors
@@ -234,6 +234,9 @@ set nocompatible
 set noswapfile
 set nobackup
 set nowritebackup
+" Maintain undo history for each buffer between vim sessions
+set undofile
+set undodir=~/.vim/undodir
 " Don't line wrap text
 set nowrap
 " Allow backspacing over everything in insert mode

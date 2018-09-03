@@ -62,10 +62,11 @@ export ERL_AFLAGS="-kernel shell_history enabled"
 # export MANPATH="/usr/local/man:$MANPATH"
 export PATH="/usr/local/opt/qt/bin:$PATH"
 export PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin":$PATH
-#export PATH="$HOME/.rbenv/bin:$PATH"
-#export PATH="$HOME/.rbenv/shims:$PATH"
-export PATH="./bin":$PATH
 export PATH="/Users/simonvandyk/miniconda3/bin:$PATH"
+export PATH=`pwd`/flutter/bin:$PATH
+export PATH=`pwd`/node_modules/.bin:$PATH
+# Always look for local executables first
+export PATH="./bin":$PATH
 
 # Preferred key bindings (vi instead of emacs)
 bindkey -v
@@ -169,18 +170,18 @@ alias tree="find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'"
 alias zrc="vim ~/.zshrc"
 alias vrc="vim ~/.vimrc"
 alias trc="vim ~/.tmux.conf"
-# tensorflow
-alias atf="source ~/tensorflow/bin/activate"
-alias dtf="deactivate"
+# Tmuxinator aliases
 alias gci="tmuxinator start gci"
 alias gcipy="tmuxinator start gcipy"
 alias prospect="tmuxinator start prospect"
 alias marsrover="tmuxinator start marsrover"
-alias migrate="rake db:migrate && rake db:test:prepare"
+alias joi="tmuxinator start joi"
 alias steam="cd '/Users/simonvandyk/.wine/drive_c/Program Files/Steam' && wine Steam.exe"
+# Misc aliases
 alias fr=$(which face_recognition)
 alias did="vim +'normal Go' +'r!date' ~/did.txt"
 
+# Which files have changed the most (churn)
 function git_churn {
   git log --all -M -C --name-only | grep -E '^(web|app|lib)/' | sort | uniq -c | sort | awk 'BEGIN {print "count,file"} {print $1 "," $2}' > out.csv | cat
 }
@@ -253,30 +254,6 @@ function gpr {
   open "https://github.com/$repo/compare/$branch?expand=1"
 }
 
-# list pull requests for repo
-function gprl {
-  repo=`git remote -v | head -1 | sed "s/git@github.com://" | cut -c8-999 | sed "s/\.git .*//"`
-  echo Opening list of pull requests for $repo
-  open "https://github.com/$repo/pulls"
-}
-
-# safe push to remote & create PR
-function gpush {
-  bin/rails t && \
-    git push origin $(current_branch) -u && \
-    gpr
-}
-
-# rake routes grep
-function rr() {
-  if [[ -n $1 ]]
-  then
-    ./rake routes | grep $1
-  else
-    ./rake routes
-  fi
-}
-
 # file sharing
 function shareit() {
   ruby -rwebrick -e "WEBrick::HTTPServer.new(:Port => 3096, :DocumentRoot => ENV['HOME']).start"
@@ -309,6 +286,7 @@ source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # Docker nonsense
 #eval "$(docker-machine env default)"
 
+# Prompt customisation
 SPACESHIP_PROMPT_ORDER=(
   time          # Time stampts section
   user          # Username section
@@ -337,7 +315,7 @@ SPACESHIP_PROMPT_ORDER=(
   kubecontext   # Kubectl context section
   exec_time     # Execution time
   line_sep      # Line break
-  battery       # Battery level and status
+  #battery       # Battery level and status
   #vi_mode       # Vi-mode indicator
   jobs          # Backgound jobs indicator
   exit_code     # Exit code section
