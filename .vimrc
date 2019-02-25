@@ -27,6 +27,8 @@ Plugin 'thoughtbot/vim-rspec'
 Plugin 'Raimondi/delimitMate'
 " Fuzzy search of all files in directory
 Plugin 'kien/ctrlp.vim'
+" Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all'  }
+" Plugin 'junegunn/fzf.vim'
 " Slim template highlighting
 Plugin 'slim-template/vim-slim'
 " Begins tab completion with a single <tab> instead of c-x c-o
@@ -76,30 +78,16 @@ Plugin 'jgdavey/tslime.vim'
 Plugin 'elixir-lang/vim-elixir'
 " Javascript
 Plugin 'jelera/vim-javascript-syntax'
-" Ember
-Plugin 'https://github.com/joukevandermaas/vim-ember-hbs.git'
-" More Ember
-Plugin 'dsawardekar/ember.vim'
 " Run tests!
 Plugin 'janko-m/vim-test'
-" Helper for minitest-focus
-Plugin 'jcqvisser/focus_toggle'
-" Material design colour scheme
-Plugin 'NLKNguyen/papercolor-theme'
-" Color scheme
-Plugin 'skielbasa/vim-material-monokai'
-" Color scheme
-Plugin 'tyrannicaltoucan/vim-quantum'
-" Color scheme
-Plugin 'skreek/skeletor.vim'
-" Color scheme
-Plugin 'nightsense/stellarized'
-" Color scheme
-Plugin 'chriskempson/base16-vim'
 " Text object manipulation https://github.com/wellle/targets.vim#installation
 Plugin 'wellle/targets.vim'
 " Vim for writing
 Plugin 'reedes/vim-pencil'
+" ALE linter & fixer
+Plugin 'w0rp/ale'
+" Local vim config
+Plugin 'embear/vim-localvimrc'
 
 
 call vundle#end()
@@ -132,7 +120,7 @@ let delimitMate_expand_space = 1
 let NERDTreeShowHidden=1
 let g:yankring_replace_n_pkey = '<C-;>'
 
-let g:rspec_command = "!rspec --drb {spec}"
+let g:rspec_command = 'call Send_to_Tmux("rspec {spec}\n")'
 let g:airline_powerline_fonts = 1
 let g:airline_theme='base16'
 
@@ -144,6 +132,72 @@ else
   let &t_SI = "\<Esc>]50;CursorShape=1\x7"
   let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 endif
+
+" vim-test config
+"let test#strategy = "vimterminal"
+let test#strategy = "tslime"
+
+"""""""""""""""""""""
+"    LocalVimRc     "
+"""""""""""""""""""""
+let g:localvimrc_ask = 0
+let g:localvimrc_whitelist = $HOME . '/Code/.*'
+
+"""""""""""""""""""""
+"        Ale        "
+"""""""""""""""""""""
+let g:airline#extensions#ale#enabled = 1
+let g:ale_sign_error = '→'
+let g:ale_sign_warning = '→'
+let g:ale_fix_on_save = 1
+let g:ale_completion_enabled = 1
+
+let g:ale_fixers = {
+\   'ruby':  [],
+\   'elixir':  [],
+\   'typescript': ['prettier'],
+\   'javascript': ['prettier'],
+\   'jsx': [],
+\   'css': [],
+\   'scss': [],
+\   'go': ['gofmt'],
+\ }
+
+let g:ale_linters = {
+\   'javascript': ['prettier'],
+\   'typescript': ['prettier'],
+\   'jsx': [],
+\   'css': [],
+\   'scss': [],
+\   'elixir': [],
+\   'ruby': [],
+\   'html': [],
+\   'markdown': [],
+\   'go': ['gofmt'],
+\}
+
+function! AddLinterIfFileExists(lang, linter, file, lint, fix)
+  let l:current = g:ale_linters[a:lang]
+
+  if filereadable(a:file) && index(l:current, a:linter) == -1
+    if a:lint
+      let g:ale_linters[a:lang] = g:ale_linters[a:lang] + [a:linter]
+    endif
+    if a:fix
+      let g:ale_fixers[a:lang] = g:ale_fixers[a:lang] + [a:linter]
+    end
+  endif
+endfunction
+
+call AddLinterIfFileExists('javascript', 'eslint', '.eslintrc.json', 1, 1)
+call AddLinterIfFileExists('javascript', 'eslint', '.eslintrc', 1, 1)
+call AddLinterIfFileExists('javascript', 'standard', 'node_modules/.bin/standard', 1, 1)
+call AddLinterIfFileExists('css', 'stylelint', '.stylelintrc', 1, 1)
+call AddLinterIfFileExists('scss', 'stylelint', '.stylelintrc', 1, 1)
+call AddLinterIfFileExists('scss', 'scss-lint', '.scss-lint.yml', 1, 1)
+call AddLinterIfFileExists('ruby', 'rubocop', '.rubocop.yml', 1, 1)
+call AddLinterIfFileExists('elixir', 'credo', 'config/.credo.exs', 1, 0)
+call AddLinterIfFileExists('elixir', 'credo', '.credo.exs', 1, 0)
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " REUSEABLE MACROS
@@ -258,6 +312,9 @@ set wildmode=longest,list
 " Wildignore files I don't want to ever open in vim
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*/node_modules/*,*/bower_components/*
 
+" fzf with mendes
+" nmap <C-p> :Files<CR>
+
 " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
 " Source https://github.com/thoughtbot/dotfiles/blob/master/vimrc
 if executable('ag')
@@ -292,7 +349,7 @@ map <leader>. :noh<cr>
 " Toggle nerd tree
 map <leader>n :NERDTreeTabsToggle<cr>
 " Toggle tagbar
-map <leader>b :TagbarToggle<cr><cr>
+map <leader>b :TagbarToggle<cr>
 " Close current buffer
 map <leader>bd :bd!<cr>
 " Close all open buffers
@@ -325,10 +382,10 @@ map <leader>ml :wincmd L<cr>
 map <leader>mm :NERDTreeTabsClose<cr>:wincmd l<cr>:wincmd H<cr>:NERDTreeTabsOpen<cr>:wincmd l<cr><C-W>=
 
 " vim-rspec mappings
-map <leader>t :call RunCurrentSpecFile()<CR>
-map <leader>s :call RunNearestSpec()<CR>
-map <leader>l :call RunLastSpec()<CR>
-map <leader>r :call RunAllSpecs()<CR>
+"map <leader>t :call RunCurrentSpecFile()<CR>
+"map <leader>s :call RunNearestSpec()<CR>
+"map <leader>l :call RunLastSpec()<CR>
+"map <leader>r :call RunAllSpecs()<CR>
 
 " Show marks
 nnoremap ` :ShowMarksOnce<cr>`
@@ -340,19 +397,12 @@ nnoremap <cr> :nohlsearch<cr>
 nnoremap <leader><leader> <c-^>
 
 " vim-test shortcuts
-nmap <silent> <leader>t :TestNearest<CR>
-nmap <silent> <leader>tf :TestFile<CR>
-nmap <silent> <leader>ts :TestSuite<CR>
+nmap <silent> <leader>t :TestNearest<cr>
+nmap <silent> <leader>tf :TestFile<cr>
+nmap <silent> <leader>ts :TestSuite<cr>
+nmap <silent> <leader>tl :TestLast<cr>
 
-" Convenient mappings to complete a shell command
-map  <leader>bi :!bundle install<space>
-map  <leader>bu :!bundle update<space>
-nmap <leader>bx :!bundle exec<space>
-nmap <leader>zx :!zeus<space>
 " Convenient mappings for vim commands
-map <leader>vbi :PluginInstall<cr>
-map <leader>vbu :PluginUpdate<cr>
-map <leader>vr :so ~/.vimrc<cr>
 map <leader>ve :e ~/.vimrc<cr>
 map <leader>te :e ~/.tmux.conf<cr>
 map <leader>ze :e ~/.zshrc<cr>
@@ -410,6 +460,7 @@ if has("autocmd")
   " Autoindent with two spaces, always expand tabs
   " These are abbreviations for tabstop, shiftwidth, softtabstop
   autocmd BufNewFile,BufReadPost * set ai ts=2 sw=2 sts=2 et
+  au BufRead,BufNewFile *.md setlocal textwidth=80
 
   " Check for external file changes
   autocmd CursorHold,CursorMoved,BufEnter * checktime
@@ -446,9 +497,6 @@ if has("autocmd")
       \ endif
 
   augroup END
-
-  " Manually set syntax to emblem (not sure why it's not picking it up)
-  autocmd BufRead,BufNewFile *.embl set syntax=emblem
 
   " Manually set syntax to slim (not sure why it's not picking it up)
   autocmd BufRead,BufNewFile *.inky set syntax=slim
